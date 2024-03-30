@@ -18,6 +18,21 @@ class Category(models.Model):
         return f'{self.__class__.__name__}{self.name}'
 
 
+class SubCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, blank=True, null=True,
+                                 verbose_name='Категория', related_name='sub_category')
+
+    class Meta:
+        db_table = 'sub_category_product'
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}{self.name}'
+
+
 class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -34,7 +49,8 @@ class Brand(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Категория')
-    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Производитель')
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Производитель',
+                              related_name='products')
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='Цена')
     availability = models.BooleanField(default=True, verbose_name='Наличие')
