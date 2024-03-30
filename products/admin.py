@@ -1,5 +1,5 @@
 from django.contrib import admin
-from products.models import Product, Category, Brand, ProductImage, SubCategory
+from products.models import Product, Category, Brand, ProductImage
 
 
 # Register your models here.
@@ -19,19 +19,21 @@ class ProductAdmin(admin.ModelAdmin):
         return obj.images.count()
 
 
-class SubCategoryInline(admin.TabularInline):
-    model = SubCategory
+class CategoryInline(admin.TabularInline):
+    model = Category
     extra = 1
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    inlines = [SubCategoryInline]
-    list_display = ('id', 'name', 'count_sub_categories')
-    list_display_links = ('id', 'name')
+    inlines = [CategoryInline]
+    list_display = ('id', 'name', 'parent_category')
+    list_display_links = ('id', 'name',)
 
-    def count_sub_categories(self, obj: Product):
-        return obj.sub_category.count()
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'parent_category':
+            kwargs['queryset'] = Category.objects.exclude(id=request.resolver_match.kwargs.get('object_id'))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Brand)

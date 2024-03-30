@@ -2,11 +2,13 @@ import os
 import uuid
 
 from django.db import models
-from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    parent_category = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                                        related_name='children')
 
     class Meta:
         db_table = 'category_product'
@@ -14,23 +16,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    def __repr__(self):
-        return f'{self.__class__.__name__}{self.name}'
-
-
-class SubCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, blank=True, null=True,
-                                 verbose_name='Категория', related_name='sub_category')
-
-    class Meta:
-        db_table = 'sub_category_product'
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}{self.name}'
+    def clean(self):
+        if self.parent_category == self:
+            raise ValidationError("Категория не может быть родителем самой себе.")
 
 
 class Brand(models.Model):
