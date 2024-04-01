@@ -1,5 +1,6 @@
 from django.contrib import admin
-from products.models import Product, Category, Brand, ProductImage
+from products.models import Product, Category, Brand, ProductImage, Feature, ProductFeature
+from django.db import models
 
 
 # Register your models here.
@@ -9,9 +10,14 @@ class ProductImageInline(admin.TabularInline):
     extra = 1
 
 
+class ProductFeatureInline(admin.TabularInline):
+    model = ProductFeature
+    extra = 1
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductImageInline]
+    inlines = [ProductImageInline, ProductFeatureInline]
     list_display = ('id', 'name', 'category', 'description', 'price', 'availability', 'count_images', 'brand')
     list_display_links = ('id', 'name')
 
@@ -40,3 +46,13 @@ class CategoryAdmin(admin.ModelAdmin):
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_display_links = ('id', 'name')
+
+
+@admin.register(ProductFeature)
+class ProductFeatureAdmin(admin.ModelAdmin):
+    list_display = ('products', 'features', 'value')
+
+
+@admin.register(Feature)
+class FeatureAdmin(admin.ModelAdmin):
+    pass
