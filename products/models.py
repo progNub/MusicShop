@@ -1,12 +1,16 @@
 import os
 import uuid
-
+from django.utils.text import slugify
 from django.db import models
-
 
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name, allow_unicode=True)
+        super(Category, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'category_product'
@@ -22,6 +26,11 @@ class SubCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, blank=True, null=True,
                                  verbose_name='Категория', related_name='sub_category')
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name, allow_unicode=True)
+        super(SubCategory, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'sub_category_product'
@@ -52,7 +61,7 @@ class Product(models.Model):
                                  verbose_name='Категория')
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Производитель',
                               related_name='products')
-    features = models.ManyToManyField('Feature', through='ProductFeature')
+    features = models.ManyToManyField('Feature', through='ProductFeature', )
     description = models.TextField(verbose_name='Описание')
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='Цена')
     availability = models.BooleanField(default=True, verbose_name='Наличие')
@@ -104,6 +113,10 @@ class ProductFeature(models.Model):
 
     class Meta:
         db_table = 'feature_product'
+        unique_together = ('products', 'features')
 
     def __str__(self):
         return f"{self.products.name} - {self.features.name}: {self.value}"
+
+    def __repr__(self):
+        return f'{self.__class__.__name__} <{self.products.name}:{self.products.name}:{self.value}>'

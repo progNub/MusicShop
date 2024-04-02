@@ -1,6 +1,5 @@
 from django.contrib import admin
 from products.models import Product, Category, Brand, ProductImage, Feature, ProductFeature, SubCategory
-from django.db import models
 
 
 # Register your models here.
@@ -24,17 +23,29 @@ class ProductAdmin(admin.ModelAdmin):
     def count_images(self, obj: Product):
         return obj.images.count()
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_related('brand', 'category')
+        queryset = queryset.prefetch_related('images', 'features')
+        return queryset
+
 
 @admin.register(SubCategory)
 class SubCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category')
     list_display_links = ('id', 'name')
-    list_editable = ('category',)
+    exclude = ('slug',)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_related('category')
+        return queryset
 
 
 class SubCategoryInline(admin.TabularInline):
     model = SubCategory
     extra = 1
+    exclude = ('slug',)
 
 
 @admin.register(Category)
@@ -42,6 +53,7 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = [SubCategoryInline]
     list_display = ('id', 'name')
     list_display_links = ('id', 'name')
+    exclude = ('slug',)
 
 
 @admin.register(Brand)

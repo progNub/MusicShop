@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path("", Home.as_view(), name="home"),  # главная страница.
-    path('<str:category_name>/', HomeCategory.as_view(), name='category'),
+    path('<slug:category_slug>/', HomeCategory.as_view(), name='sub-category'),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
