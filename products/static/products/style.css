@@ -1,0 +1,21 @@
+.home-main-container {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    justify-content: space-around;
+}
+
+.list-products {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+}
+
+
+.main-block-category{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 90%;
+}

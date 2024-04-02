@@ -1,0 +1,19 @@
+.base-navbar {
+    background-color: beige;
+}
+
+.base-content {
+    background-color: palegoldenrod;
+    min-height: 85vh;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+
+}
+
+
+.base-footer {
+    background-color: beige;
+    height: 500px;
+}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from products.models import Product, Category, Brand, ProductImage, Feature, ProductFeature
+from products.models import Product, Category, Brand, ProductImage, Feature, ProductFeature, SubCategory
 from django.db import models
 
 
@@ -25,21 +25,23 @@ class ProductAdmin(admin.ModelAdmin):
         return obj.images.count()
 
 
-class CategoryInline(admin.TabularInline):
-    model = Category
+@admin.register(SubCategory)
+class SubCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'category')
+    list_display_links = ('id', 'name')
+    list_editable = ('category',)
+
+
+class SubCategoryInline(admin.TabularInline):
+    model = SubCategory
     extra = 1
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    inlines = [CategoryInline]
-    list_display = ('id', 'name', 'parent_category')
-    list_display_links = ('id', 'name',)
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'parent_category':
-            kwargs['queryset'] = Category.objects.exclude(id=request.resolver_match.kwargs.get('object_id'))
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    inlines = [SubCategoryInline]
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
 
 
 @admin.register(Brand)

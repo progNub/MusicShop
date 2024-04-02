@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load list_category %}
+{% block links %}
+	<link rel="stylesheet" href="{% static 'products/style.css' %}">
+{% endblock %}
+
+{% block title %}
+	Главная
+{% endblock %}
+
+
+
+{% block base-content %}
+	<div class="home-main-container">
+
+		{% get_categories selected_sub_category %}
+
+		{% include 'inc/products/_list_products.html' %}
+	</div>
+
+
+{% endblock %}
