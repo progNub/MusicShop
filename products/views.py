@@ -45,8 +45,3 @@ class HomeCategory(Home):
         return context
 
 
-class HomeFeatures(Home):
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(features=self.kwargs['category_id'])
-        return queryset

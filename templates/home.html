@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load list_category %}
+
+
 {% block links %}
 	<link rel="stylesheet" href="{% static 'products/style.css' %}">
 {% endblock %}
@@ -15,9 +16,24 @@
 {% block base-content %}
 	<div class="home-main-container">
 
-		{% get_categories selected_sub_category_slug %}
 
-		{% include 'inc/products/_list_products.html' %}
+		<div class="container-features">
+			{% load list_features %}
+			{% get_features %}
+		</div>
+
+
+		<div class="container-products-category">
+
+			<div class="container-category">
+				{% load list_category %}
+				{% get_categories selected_sub_category_slug %}
+			</div>
+
+			<div class="container-products">
+				{% include 'inc/products/_list_products.html' %}
+			</div>
+		</div>
 	</div>
 
 

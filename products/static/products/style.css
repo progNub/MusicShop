@@ -1,8 +1,38 @@
 .home-main-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     width: 80%;
+    justify-content: flex-start;
+}
+
+.container-features {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+    padding-bottom: 5px;
+}
+
+.container-products-category {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
     justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.container-category {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 15%;
+}
+
+.container-products {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 85%;
 }
 
 .list-products {
@@ -13,9 +43,15 @@
 }
 
 
-.main-block-category{
+.main-block-category {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    width: 90%;
+    width: 100%;
+}
+
+.container-card-product {
+    width: 323px;
+    padding-left: 3px;
+    padding-right: 3px;
 }
