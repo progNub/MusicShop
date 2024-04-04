@@ -4,6 +4,7 @@ from django.db.models import F
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
+from django.db.models import OuterRef, Subquery
 
 
 # Create your views here.
@@ -16,14 +17,13 @@ class Home(ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        products = Product.objects.annotate(first_image=F('images__image')).order_by('id')
+        products = Product.objects.filter(availability=True).order_by('id')
         products = products.select_related('brand')
+        image = ProductImage.objects.filter(
+            product=OuterRef('pk')
+        ).order_by('id')[:1]
+        products = products.annotate(image=Subquery(image.values('image')[:1]))
         return products
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=None, **kwargs)
-        context.update({'MEDIA_URL': settings.MEDIA_URL})
-        return context
 
 
 class HomeCategory(Home):
