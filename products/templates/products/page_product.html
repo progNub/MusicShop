@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block links %}
+	<link rel="stylesheet" href="{% static 'products/style.css' %}">
+{% endblock %}
+
+{% block base-content %}
+	<h3>{{ product }}</h3>
+	<br>
+	<div class="content-detail-product">
+		<div class="container-images-detail-product align-self-center">
+			<div id="carouselExampleIndicators" class="carousel slide ">
+				<div class="carousel-inner d-flex align-items-center">
+					{% for image in product.images.all %}
+						{% if forloop.first %}
+							<div class="carousel-item active">
+								<img src="{{ MEDIA_URL }}{{ image }}" class="d-block w-100" alt="{{ image }}"
+									 style="height: 700px;  width: auto">
+							</div>
+						{% else %}
+							<div class="carousel-item">
+								<img src="{{ MEDIA_URL }}{{ image }}" class="d-block w-100" alt="{{ image }}"
+									 style="height: 700px; width: auto">
+							</div>
+						{% endif %}
+					{% endfor %}
+				</div>
+
+				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+						data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Предыдущий</span>
+				</button>
+
+				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+						data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Следующий</span>
+				</button>
+			</div>
+		</div>
+		<br>
+		<div class="container-features">
+			<div class="container-description">
+				<p>Цена: {{ product.price }}</p>
+				<p>Цена: {{ product.availability }}</p>
+				<p>Цена: {{ product.brand }}</p>
+				<p>Цена: {{ product.description }}</p>
+			</div>
+
+			<div class="container-features-table">
+				<table class="table">
+					<tbody>
+					{% for feature, sub_features in features.items %}
+						<tr>
+							<th colspan="2">{{ feature.name }}</th>
+						</tr>
+						{% for item in sub_features %}
+							<tr>
+								<td>{{ item.sub_feature.name }}:</td>
+								<td>{{ item.value }}</td>
+							</tr>
+						{% endfor %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+
+
+{% endblock %}

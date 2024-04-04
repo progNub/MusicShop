@@ -1,12 +1,11 @@
 from django import template
-from products.models import Feature, ProductFeature
+from products.models import Feature, ProductSubFeature
 
 register = template.Library()
 
 
-@register.inclusion_tag(filename='inc/products/tag_list_feature.html')
+@register.inclusion_tag(filename='inc/tag_list_feature.html')
 def get_features(features: [str] = ''):
-    context: dict = {}
-    list_feature = Feature.objects.all()
-    context.update({'list_feature': list_feature})
-    return context
+    list_feature = Feature.objects.all().prefetch_related('sub_feature')
+    return {'list_feature': list_feature}
+
