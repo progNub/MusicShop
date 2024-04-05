@@ -1,0 +1,13 @@
+.main-block-feature {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.container-characteristic {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 15%;
+}

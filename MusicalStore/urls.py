@@ -19,8 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-import accounts
-from products.views import Home, HomeCategory
+from products.views import Home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +28,6 @@ urlpatterns = [
     path('account/', include('accounts.urls')),
     path('product/', include('products.urls')),
 
-    path('<slug:sub_category_slug>/', HomeCategory.as_view(), name='sub-category'),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

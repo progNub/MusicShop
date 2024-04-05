@@ -19,13 +19,10 @@
 
 		<div class="container-products-category">
 
-			<div class="container-category">
-				{% load list_category %}
-				{% get_categories selected_sub_category_slug %}
-				<br>
+
 				{% load list_features %}
 				{% get_features %}
-			</div>
+
 
 			<div class="container-products">
 				{% include 'inc/_list_products.html' %}

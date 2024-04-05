@@ -42,7 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'catalog.apps.CatalogConfig',
     'products.apps.ProductsConfig',
+
+    'characteristic.apps.CharacteristicConfig',
+    'common_models.apps.CommonModelsConfig',
     "debug_toolbar",
 ]
 

@@ -1,5 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from products.models import Product, Category, ProductImage, SubCategory, ProductSubFeature, Feature
+
+from common_models.models import ProductSubFeature
+from products.models import Product, ProductImage
 from django.db.models import F
 from django.conf import settings
 from django.http import Http404
@@ -26,25 +28,6 @@ class Home(ListView):
         return products
 
 
-class HomeCategory(Home):
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(sub_category__slug=self.kwargs['sub_category_slug'])
-        return queryset
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=None, **kwargs)
-
-        try:
-            selected_sub_category = SubCategory.objects.get(slug=self.kwargs['sub_category_slug'])
-        except SubCategory.DoesNotExist:
-            raise Http404('Выбранная подкатегория не существует')
-
-        context.update({'selected_sub_category_slug': selected_sub_category.slug})
-        return context
-
-
 class DetailProduct(DetailView):
     model = Product
     template_name = 'products/page_product.html'
@@ -54,7 +37,7 @@ class DetailProduct(DetailView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.select_related('brand', 'sub_category')
+        queryset = queryset.select_related('brand')
         queryset = queryset.prefetch_related('images')
         return queryset
 
