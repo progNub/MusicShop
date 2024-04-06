@@ -1,0 +1,55 @@
+{% load static %}
+
+{% block links %}
+	<link rel="stylesheet" href="{% static 'catalog/css/style.css' %}">
+
+{% endblock %}
+
+<div class="container-catalog">
+
+
+	<button class="btn btn-outline-dark  " type="button" data-bs-toggle="collapse"
+			data-bs-target="#collapseCatalog" aria-expanded="false" aria-controls="collapseCatalog"
+			style="width: 130px">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list"
+			 viewBox="0 0 16 16">
+			<path fill-rule="evenodd"
+				  d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+		</svg>
+		Каталог
+
+	</button>
+
+	<div class="collapse" id="collapseCatalog">
+		<div class="container-catalog-item">
+			{% for node in category_tree %}
+				<div class="catalog-item-0">
+					<div class="catalog-item-0-name">
+						<p>{{ node.name }}</p>
+					</div>
+					<div class="catalog-item-1-container">
+						{% for child in node.children.all %}
+							<div class="col-2">
+
+								<div class="catalog-item-1-name ">
+									<p>  {{ child.name }}</p>
+								</div>
+
+								{% for child_1 in child.children.all %}
+									<div class="catalog-item-2">
+										<div class="catalog-item-2-name">
+											<a href="{% url 'category' child_1.slug %}">{{ child_1.name }}</a>
+										</div>
+									</div>
+
+								{% endfor %}
+
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+
+		</div>
+	</div>
+</div>

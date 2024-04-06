@@ -28,29 +28,29 @@
 
 <body>
 
+<div class="base">
 
-<div class="base-navbar">
-	{% block base-navbar %}
-		{% include 'inc/_menu.html' %}
-	{% endblock %}
+	<div class="base-navbar">
+		{% block base-navbar %}
+			{% include 'inc/_menu.html' %}
+		{% endblock %}
+	</div>
+
+
+	<div class="base-content">
+		{% block base-content %}
+
+		{% endblock %}
+	</div>
+	{% include 'inc/_number_pages.html' %}
+
+
+	<div class="base-footer">
+		{% block base-footer %}
+
+		{% endblock %}
+	</div>
 </div>
-
-
-<div class="base-content">
-	{% block base-content %}
-
-	{% endblock %}
-</div>
-{% include 'inc/_number_pages.html' %}
-
-
-
-<div class="base-footer">
-	{% block base-footer %}
-
-	{% endblock %}
-</div>
-
 
 </body>
 </html>

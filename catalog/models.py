@@ -28,3 +28,5 @@ class CatalogItem(MPTTModel):
     def save(self, *args, **kwargs):
         self.slug=get_slug_catalog_item(model=self)
         super(CatalogItem, self).save(*args, **kwargs)
+
+

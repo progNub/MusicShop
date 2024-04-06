@@ -16,19 +16,18 @@
 {% block base-content %}
 	<div class="home-main-container">
 
-
-		<div class="container-products-category">
-
-
+		<div class="main-content_common">
+			<div class="container-features">
 				{% load list_features %}
 				{% get_features %}
+			</div>
 
 
 			<div class="container-products">
 				{% include 'inc/_list_products.html' %}
+
 			</div>
 		</div>
 	</div>
-
 
 {% endblock %}

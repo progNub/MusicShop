@@ -1,12 +1,12 @@
 .home-main-container {
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 80vw;
     justify-content: flex-start;
 }
 
 
-.container-products-category {
+.main-content_common {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -14,12 +14,7 @@
     flex-wrap: wrap;
 }
 
-.container-characteristic {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 15%;
-}
+
 
 .container-products {
     display: flex;

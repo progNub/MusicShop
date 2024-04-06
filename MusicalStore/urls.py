@@ -25,7 +25,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", Home.as_view(), name="home"),  # главная страница.
 
+    path('catalog/', include('catalog.urls')),
+
     path('account/', include('accounts.urls')),
+
     path('product/', include('products.urls')),
 
     path("__debug__/", include("debug_toolbar.urls")),

@@ -152,4 +152,4 @@ if __name__ == '__main__':
     CatalogItem.objects.all().delete()
     create_catalog_structure()
     create_brands()
-    create_products()
+    create_products(100)
