@@ -29,8 +29,9 @@
 
 								{#      Поиск   #}
 								<li class="nav-item">
-									<form class="d-flex form-search-product" role="search">
-										<input id="search-product" class="form-control me-2" type="search"
+									<form class="d-flex form-search-product" action="{% url 'home' %}" role="search">
+										<input id="search-product" name="search-product" class="form-control me-2"
+											   type="search"
 											   placeholder="Поиск" aria-label="Поиск">
 										<button class="btn btn-outline-success" type="submit">Поиск</button>
 									</form>

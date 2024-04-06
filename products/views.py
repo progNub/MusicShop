@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from common_models.models import ProductSubFeature
 from products.models import Product, ProductImage
-from django.db.models import F
+from django.db.models import F, Q
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
@@ -25,6 +25,11 @@ class Home(ListView):
             product=OuterRef('pk')
         ).order_by('id')[:1]
         products = products.annotate(image=Subquery(image.values('image')[:1]))
+
+        query = self.request.GET.get('search-product')
+        if query:
+            products = products.filter(Q(name__icontains=query) | Q(
+                description__icontains=query))  # Ищите продукты, чье имя содержит поисковый запрос
         return products
 
 
