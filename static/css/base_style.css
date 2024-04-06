@@ -68,9 +68,13 @@
 
 }
 
-.container-product-category {
+
+.main-content_common {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+
 }
 
 

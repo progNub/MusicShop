@@ -5,6 +5,10 @@
     width: 100%;
 }
 
+.container-features {
+    width: 250px;
+}
+
 .container-characteristic {
     display: flex;
     flex-direction: column;

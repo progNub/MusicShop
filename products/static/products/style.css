@@ -6,16 +6,6 @@
 }
 
 
-.main-content_common {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-
-
 .container-products {
     display: flex;
     flex-direction: column;
@@ -40,7 +30,7 @@
 
 
 .container-card-product {
-    width: 323px;
+    width: 322px;
     padding-left: 3px;
     padding-right: 3px;
 }
