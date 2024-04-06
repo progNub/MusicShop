@@ -16,7 +16,7 @@ class Home(ListView):
     model = Product
     template_name = 'home.html'
     context_object_name = 'products'
-    paginate_by = 50
+    paginate_by = 20
 
     def get_queryset(self):
         products = Product.objects.filter(availability=True).order_by('id')
@@ -26,10 +26,17 @@ class Home(ListView):
         ).order_by('id')[:1]
         products = products.annotate(image=Subquery(image.values('image')[:1]))
 
-        query = self.request.GET.get('search-product')
-        if query:
-            products = products.filter(Q(name__icontains=query) | Q(
-                description__icontains=query))  # Ищите продукты, чье имя содержит поисковый запрос
+        sort_search = self.request.GET.get('sort')
+        if sort_search:
+            if sort_search == 'cheap':
+                products = products.order_by('price')
+            elif sort_search == 'expensive':
+                products = products.order_by('-price')
+
+        query_search = self.request.GET.get('search-product')
+        if query_search:
+            products = products.filter(Q(name__icontains=query_search) | Q(
+                description__icontains=query_search))
         return products
 
 

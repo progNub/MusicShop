@@ -15,17 +15,37 @@
 
 {% block base-content %}
 	<div class="home-main-container">
-
 		<div class="main-content_common">
-			<div class="container-features">
-				{% load list_features %}
-				{% get_features %}
-			</div>
+			<div class="container-fluid d-flex row">
+				<div class="container-sort d-flex justify-content-end">
+					<div class="dropdown">
+						<a class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+						   style="text-decoration: none">
+							Сортировка:
+							{% if request.GET.sort == 'cheap' %}Дешевые
+							{% elif request.GET.sort == 'expensive' %}Дорогие
+							{% else %}сначала{% endif %}
+						</a>
+						<form action="{% url 'home' %}">
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="?sort=cheap">Дешевые</a></li>
+								<li><a class="dropdown-item" href="?sort=expensive">Дорогие</a></li>
+							</ul>
+						</form>
+					</div>
+				</div>
+				<div class="container-fluid d-flex">
+					<div class="container-features">
+						{% load list_features %}
+						{% get_features %}
+					</div>
 
 
-			<div class="container-products">
-				{% include 'inc/_list_products.html' %}
+					<div class="container-products">
+						{% include 'inc/_list_products.html' %}
 
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

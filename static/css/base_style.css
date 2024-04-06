@@ -71,7 +71,7 @@
 .main-content_common {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 90%;
     justify-content: space-between;
 
 }
