@@ -19,6 +19,7 @@
 			<div class="container-fluid d-flex row">
 				<div class="container-sort d-flex justify-content-end">
 					<div class="dropdown">
+
 						<a class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
 						   style="text-decoration: none">
 							Сортировка:
@@ -34,15 +35,12 @@
 						</form>
 					</div>
 				</div>
-				<div class="container-fluid d-flex">
-					<div class="container-features">
-						{% load list_features %}
-						{% get_features %}
-					</div>
 
 
-					<div class="container-products">
-						{% include 'inc/_list_products.html' %}
+
+				<div class="container-fluid d-flex flex-lg-row">
+					<div class="container-fluid d-lg-flex flex-lg-row">
+						{% include 'products/inc/_list_products.html' %}
 
 					</div>
 				</div>

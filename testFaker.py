@@ -31,7 +31,7 @@ def create_features(count: int = 10):
     features = []
     for i in range(count):
         feature = Feature()
-        feature.name = fake.unique.word()
+        feature.name = 'Feature_' + fake.unique.word()
         feature.slug = slugify(feature.name)
         features.append(feature)
     Feature.objects.bulk_create(features)
@@ -44,7 +44,7 @@ def create_sub_features(count: int = 10):
     parent_features = list(Feature.objects.all())
     for i in range(count):
         sub_feature = SubFeature()
-        sub_feature.name = fake.unique.word()
+        sub_feature.name = 'SubFeatures_' + fake.unique.word()
         sub_feature.feature = random.choice(parent_features)
         sub_feature.slug = slugify(str(sub_feature.feature.name + '-' + sub_feature.name))
         sub_features.append(sub_feature)
@@ -62,7 +62,7 @@ def create_brands(count: int = 10):
     brands = []
     for i in range(count):
         brand = Brand()
-        brand.name = fake.unique.word()
+        brand.name = 'Brand_' + fake.unique.word()
         brand.slug = slugify(brand.name)
         brands.append(brand)
     Brand.objects.bulk_create(brands)
@@ -78,7 +78,7 @@ def create_catalog_structure(parent=None, depth=3, current_level=1):
 
     for _ in range(num_items):
         catalog_item = CatalogItem()
-        catalog_item.name = fake.unique.word()
+        catalog_item.name = str(current_level) + '_Catalog_' + fake.unique.word()
         catalog_item.parent = parent
         catalog_item.save()  # Сохраняем элемент, чтобы получить его slug и возможность добавления дочерних элементов
 
@@ -123,12 +123,12 @@ def create_products(count: int = 10):
     products = []
     for i in range(count):
         product = Product()
-        product.name = fake.unique.word()
-        product.description = fake.text(max_nb_chars=1000)
+        product.name = 'Product_' + fake.unique.word()
+        product.description = fake.text(max_nb_chars=500)
         product.slug = slugify(product.name)
-        product.brand = random.choice(list(brands))
+        product.brand = random.choice(brands)
         product.price = random.randint(100, 50000)
-        product.category = random.choice(list(categories))
+        product.category = random.choice(categories)
         product.save()  # Сначала сохраняем продукт
 
         # Создаем новую связь между продуктом и характеристикой с заданным значением

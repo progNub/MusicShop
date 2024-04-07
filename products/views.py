@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
+from django_filters.views import FilterView
 from common_models.models import ProductSubFeature
+from products.filters import ProductFilter
 from products.models import Product, ProductImage
 from django.db.models import F, Q
 from django.conf import settings
@@ -12,11 +13,12 @@ from django.db.models import OuterRef, Subquery
 # Create your views here.
 
 
-class Home(ListView):
+class Home(FilterView):
     model = Product
     template_name = 'home.html'
     context_object_name = 'products'
     paginate_by = 20
+    filterset_class = ProductFilter
 
     def get_queryset(self):
         products = Product.objects.filter(availability=True).order_by('id')
