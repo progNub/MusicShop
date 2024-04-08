@@ -1,28 +1,9 @@
-<div class="d-flex flex-column w-50" >
+<div class="d-flex flex-column" style="width: 300px">
 	{% include 'products/inc/__filter_products.html' %}
 </div>
 <div class="card-group">
 	{% for product in products %}
-		<div class="container-card-product">
-			<div class="card">
-				<div style="height: 200px; width: 100%;">
-					<img src="{{ MEDIA_URL }}{{ product.image }}" class="card-img-top img-fluid"
-						 style="object-fit: cover; width: 100%; height: 100%;" alt="{{ product.name }}">
-				</div>
-				<div class="card-body">
-					<h5 class="card-title">Название: {{ product.name }}</h5>
-					<p class="card-text">Производитель: {{ product.brand }}</p>
-					<p class="card-text">Цена: {{ product.price }}</p>
-					{% if product.availability %}
-						<p class="card-text">Наличие: есть</p>
-					{% else %}
-						<p class="card-text">Наличие: заказать</p>
-					{% endif %}
-					<a href="#" class="btn btn-success">Добавить в корзину</a>
-					<a href="{{ product.get_absolute_url }}">Посмотреть</a>
-				</div>
-			</div>
-		</div>
+		{% include 'products/inc/__card_product.html' %}
 	{% endfor %}
 </div>
 

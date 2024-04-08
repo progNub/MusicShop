@@ -21,6 +21,12 @@ class Product(models.Model):
     availability = models.BooleanField(default=True, verbose_name='Наличие')
     slug = models.SlugField(unique=True)
 
+    def get_main_image(self):
+        main_image = self.images.first()
+        if main_image:
+            return main_image.image.url
+        return None
+
     def get_absolute_url(self):
         return reverse('show-product', args=[self.slug])
 
