@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'characteristic.apps.CharacteristicConfig',
     'common_models.apps.CommonModelsConfig',
+    'card.apps.CardConfig',
     'django_filters',
     "debug_toolbar",
 ]

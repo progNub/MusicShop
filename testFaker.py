@@ -25,8 +25,27 @@ def create_admin():
     user.save()
 
 
+def create_users(count=10, delete_all=False):
+    if delete_all:
+        print('Delete all Users')
+        User.objects.all().delete()
+    print(f'Creating Users {str(count)}')
+    users = []
+    for i in range(count):
+        user = User()
+        user.username = 'user_' + fake.unique.word()
+        user.first_name = fake.name()
+        user.last_name = fake.name()
+        user.email = fake.unique.email()
+        user.phone = fake.msisdn()
+        user.set_password('<PASSWORD>')
+        users.append(user)
+        print(user)
+    User.objects.bulk_create(users)
+
+
 def create_features(count: int = 10):
-    print('Creating Features')
+    print(f'Creating Features {str(count)}')
     Feature.objects.all().delete()
     features = []
     for i in range(count):
@@ -38,7 +57,8 @@ def create_features(count: int = 10):
 
 
 def create_sub_features(count: int = 10):
-    print('Creating SubFeatures')
+    print(f'Creating SubFeatures{str(count)}')
+
     SubFeature.objects.all().delete()
     sub_features = []
     parent_features = list(Feature.objects.all())
@@ -146,10 +166,11 @@ def create_products(count: int = 10):
 
 
 if __name__ == '__main__':
-    create_admin()
-    create_all_features()
-
-    CatalogItem.objects.all().delete()
-    create_catalog_structure()
-    create_brands()
-    create_products(100)
+    # create_admin()
+    # create_all_features()
+    #
+    # CatalogItem.objects.all().delete()
+    # create_catalog_structure()
+    # create_brands()
+    # create_products(100)
+    create_users(50)

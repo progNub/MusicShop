@@ -6,6 +6,6 @@ from django.conf.urls.static import static
 from catalog.views import CatalogListView
 
 urlpatterns = [
-    path("<slug:category_slug>", CatalogListView.as_view(), name="category"),  # главная страница.
+    path("<slug:category_slug>", CatalogListView.as_view(), name="category"),
 
 ]

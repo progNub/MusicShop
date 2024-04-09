@@ -26,6 +26,7 @@ urlpatterns = [
     path("", Home.as_view(), name="home"),  # главная страница.
 
     path('catalog/', include('catalog.urls')),
+    path('card/', include('card.urls')),
 
     path('account/', include('accounts.urls')),
 

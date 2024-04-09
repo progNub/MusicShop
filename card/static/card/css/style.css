@@ -1,0 +1,16 @@
+
+.button_delete {
+    background-color: transparent; /* Сделать фон кнопки прозрачным */
+    border: none; /* Убрать границу кнопки */
+    cursor: pointer; /* Изменить курсор при наведении на кнопку */
+    opacity: 50%;
+}
+
+.img_delete {
+    fill: currentColor; /* Задать цвет SVG (иконки) такой же, как у текста кнопки */
+    transition: opacity 0.3s ease; /* Добавить плавное изменение прозрачности */
+}
+
+.button_delete:hover {
+    opacity: 100%; /* Изменить прозрачность SVG при наведении на кнопку */
+}
