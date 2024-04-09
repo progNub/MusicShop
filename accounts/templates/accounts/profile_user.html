@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %} {{ user }} {% endblock %}
+
+{% block links %}
+	<link href="{% static 'account/css/style.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block base-content %}
+	<div class="d-flex flex-column w-100 p-4">
+
+		<div class="col-3">
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item border-primary">Никнейм: {{ user.username }}</li>
+				<li class="list-group-item border-primary">Имя: {{ user.first_name }}</li>
+				<li class="list-group-item border-primary">Фамилия: {{ user.last_name }}</li>
+				<li class="list-group-item border-primary">Email: {{ user.email }}</li>
+				<li class="list-group-item border-primary border-bottom">
+					Дата регистрации: {{ user.date_joined }}</li>
+			</ul>
+		</div>
+	</div>
+
+{% endblock %}
+
+
+
+
+

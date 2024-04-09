@@ -65,7 +65,7 @@
 											</a>
 
 											<ul class="dropdown-menu">
-												<li><a class="dropdown-item" href="#">Мой профиль</a></li>
+												<li><a class="dropdown-item" href="{% url 'profile' user.username %}">Мой профиль</a></li>
 												{% if user.is_superuser %}
 													<li><a class="dropdown-item"
 														   href="{% url 'admin:index' %}">Админка</a></li>
