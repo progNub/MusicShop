@@ -50,7 +50,9 @@
 
 .flex-end {
     display: flex;
+    justify-content: start;
     align-self: end;
+    min-width: 300px;
 }
 
 

@@ -20,6 +20,12 @@ class Home(FilterView):
     paginate_by = 20
     filterset_class = ProductFilter
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        search_product = self.request.GET.get('search_product')
+        context.update({'search_product': search_product})
+        return context
+
     def get_queryset(self):
         products = Product.objects.filter(availability=True).order_by('id')
         products = products.select_related('brand')
@@ -35,7 +41,7 @@ class Home(FilterView):
             elif sort_search == 'expensive':
                 products = products.order_by('-price')
 
-        query_search = self.request.GET.get('search-product')
+        query_search = self.request.GET.get('search_product')
         if query_search:
             products = products.filter(Q(name__icontains=query_search) | Q(
                 description__icontains=query_search))
