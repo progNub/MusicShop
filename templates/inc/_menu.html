@@ -65,11 +65,18 @@
 											</a>
 
 											<ul class="dropdown-menu">
-												<li><a class="dropdown-item" href="{% url 'profile' user.username %}">Мой профиль</a></li>
+												<li><a class="dropdown-item" href="{% url 'profile' user.username %}">Мой
+													профиль</a></li>
 												{% if user.is_superuser %}
 													<li><a class="dropdown-item"
 														   href="{% url 'admin:index' %}">Админка</a></li>
+
 												{% endif %}
+												{% if user.is_staff or user.is_superuser %}
+													<li><a class="dropdown-item"
+														   href="{% url 'create_product' %}">Создать товар</a></li>
+												{% endif %}
+
 												<li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
 											</ul>
 										</div>

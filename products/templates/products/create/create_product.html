@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %} Добавление товар {% endblock %}
+
+{% block links %}
+	<script src="{% static 'products/js/add_inline_forms.js' %}"></script>
+{% endblock %}
+
+{% block base-content %}
+	{% include 'products/create/inc/_empty_inline_form.html' %}
+
+
+	<div class="d-flex flex-row justify-content-center w-100">
+		<div class="d-flex flex-column w-50">
+			<h1>Добавление товара</h1>
+			<form method="post" enctype="multipart/form-data">
+				<div style="color: red">{{ form.non_field_errors }}</div>
+				{% csrf_token %}
+				{% for input in form %}
+					{% if input.label == 'features' %}
+
+					{% endif %}
+					<label for="{{ input.id_for_label }}" class="form-label">{{ input.label }}</label>
+					<div class="mb-3">{{ input }}</div>
+
+					<div id="{{ input.id_for_label }}help" class="form-text">{{ input.help_text }}</div>
+					<div style="color: red">{{ input.errors }}</div>
+				{% endfor %}
+
+
+
+
+				<div class="border border-1 p-3" id="formset-container">
+					<p>Особенности</p>
+					{{ form.inlines.0.management_form }}
+
+					<button type="button" id="add-form-btn" class="btn btn-success">Добавить характеристики</button>
+					<button type="button" id="add-new-form-btn" class="btn btn-primary">Создать характеристику</button>
+
+					{% for form in formset %}
+						<div class="inline-form">
+							<div class="d-flex flex-row justify-content-end">
+								<button type="button" class="btn btn-danger remove-form-btn">Удалить</button>
+							</div>
+							<div class="d-flex flex-column">
+								{{ formset.empty_form.as_p | safe }}
+							</div>
+						</div>
+					{% endfor %}
+
+				</div>
+
+				<div class="d-flex flex-row justify-content-end p-2">
+					<button class="btn btn-success  col-3" type="submit">Создать</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+
+{% endblock %}
+
+
+
+
+

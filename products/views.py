@@ -2,12 +2,17 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django_filters.views import FilterView
 from common_models.models import ProductSubFeature
 from products.filters import ProductFilter
+from products.forms import ProductForm
 from products.models import Product, ProductImage
 from django.db.models import F, Q
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 from django.db.models import OuterRef, Subquery
+from django.urls import reverse_lazy
+from django.db import transaction
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http import HttpResponseForbidden
 
 
 # Create your views here.
@@ -75,3 +80,42 @@ class DetailProduct(DetailView):
 
         context.update({'features': features})
         return context
+
+
+class CreateProduct(CreateView):
+    model = Product
+    template_name = 'products/create/create_product.html'
+    context_object_name = 'product'
+    form_class = ProductForm
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_staff or request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        return HttpResponseForbidden()
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateProduct, self).get_context_data(**kwargs)
+        if 'formset' not in context:
+            formset = self.form_class.inlines[0](self.request.POST or None)
+            # Предполагается, что self.form_class.inlines[0] возвращает класс формсета
+            context['formset'] = formset
+        return context
+
+    @transaction.atomic
+    def form_valid(self, form: ProductForm):
+        context = self.get_context_data()
+        formset = context['formset']
+        product = form.save(commit=False)
+
+        if formset.is_valid():
+            product.save()
+            formset.instance = product
+            formset.save()
+            return super(CreateProduct, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_success_url(self):
+        product = self.object
+        return reverse_lazy('show-product', args=[product.slug])
