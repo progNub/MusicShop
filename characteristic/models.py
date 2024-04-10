@@ -8,6 +8,10 @@ class Feature(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название', unique=True)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        verbose_name = "Характеристика"
+        verbose_name_plural = "Характеристика"
+
     def __str__(self):
         return f"{self.name}"
 
@@ -18,11 +22,14 @@ class Feature(models.Model):
 
 class SubFeature(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')
-    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, related_name='sub_feature', null=False)
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, related_name='sub_feature', null=False,
+                                verbose_name='Характеристика')
     slug = models.SlugField(unique=True)
 
     class Meta:
         unique_together = ('name', 'feature')
+        verbose_name = "Подхарактеристика"
+        verbose_name_plural = "Подхарактеристика"
 
     def __str__(self):
         return f"{self.name}"
@@ -37,11 +44,13 @@ class SubFeature(models.Model):
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название')
     slug = models.SlugField(unique=True)
 
     class Meta:
         db_table = 'brand_product'
+        verbose_name = 'Производитель'
+        verbose_name_plural = 'Производители'
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

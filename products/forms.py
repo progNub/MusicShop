@@ -1,20 +1,9 @@
 from django import forms
 
-from characteristic.models import Feature
+from common_models.forms import ProductSubFeatureForm
 from common_models.models import ProductSubFeature
 from .models import Product, CatalogItem, Brand, SubFeature
 from django.forms import inlineformset_factory
-
-
-class ProductSubFeatureForm(forms.ModelForm):
-    class Meta:
-        model = ProductSubFeature
-        fields = ['sub_feature', 'value']
-        widgets = {
-            'sub_feature': forms.Select(attrs={'class': 'form-control'}),
-            'value': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-
 
 ProductSubFeatureFormSet = inlineformset_factory(
     Product, ProductSubFeature,

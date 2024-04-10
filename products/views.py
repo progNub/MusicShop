@@ -88,7 +88,6 @@ class CreateProduct(CreateView):
     context_object_name = 'product'
     form_class = ProductForm
 
-
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_staff or request.user.is_superuser:
             return super().dispatch(request, *args, **kwargs)
@@ -98,7 +97,6 @@ class CreateProduct(CreateView):
         context = super(CreateProduct, self).get_context_data(**kwargs)
         if 'formset' not in context:
             formset = self.form_class.inlines[0](self.request.POST or None)
-            # Предполагается, что self.form_class.inlines[0] возвращает класс формсета
             context['formset'] = formset
         return context
 

@@ -27,6 +27,7 @@ urlpatterns = [
 
     path('catalog/', include('catalog.urls')),
     path('card/', include('card.urls')),
+    path('characteristic/', include('characteristic.urls')),
 
     path('account/', include('accounts.urls')),
 

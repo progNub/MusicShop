@@ -19,9 +19,7 @@
 				<div style="color: red">{{ form.non_field_errors }}</div>
 				{% csrf_token %}
 				{% for input in form %}
-					{% if input.label == 'features' %}
 
-					{% endif %}
 					<label for="{{ input.id_for_label }}" class="form-label">{{ input.label }}</label>
 					<div class="mb-3">{{ input }}</div>
 
@@ -31,13 +29,11 @@
 
 
 
-
 				<div class="border border-1 p-3" id="formset-container">
-					<p>Особенности</p>
+					<p>Параметры</p>
 					{{ form.inlines.0.management_form }}
 
-					<button type="button" id="add-form-btn" class="btn btn-success">Добавить характеристики</button>
-					<button type="button" id="add-new-form-btn" class="btn btn-primary">Создать характеристику</button>
+					<button type="button" id="add-form-btn" class="btn btn-success">Добавить характеристику</button>
 
 					{% for form in formset %}
 						<div class="inline-form">
