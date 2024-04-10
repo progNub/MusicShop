@@ -17,7 +17,7 @@
 			<br>
 
 			{% for feature in  features %}
-				<p>{{ forloop.counter }}: {{ feature.name }}</p>
+				<a href="{% url 'update_feature' feature.slug %}">{{ forloop.counter }}: {{ feature.name }}</a>
 			{% endfor %}
 
 
@@ -46,7 +46,7 @@
 			<br>
 
 			{% for sub_feature in  sub_features %}
-				<p>{{ forloop.counter }}: {{ sub_feature.name }}</p>
+				<a href="{% url 'update_sub_feature' sub_feature.slug %}">{{ forloop.counter }}: {{ sub_feature.name }}</a>
 			{% endfor %}
 			<form class="border border-1 p-3" method="post" enctype="multipart/form-data"
 				  action="{% url 'create_sub_feature' %}">
@@ -72,7 +72,7 @@
 			<h4>Брэнды</h4>
 			<br>
 			{% for brand in brands %}
-				<p>{{ forloop.counter }}: {{ brand.name }}</p>
+				<a href="{% url 'update_brand' brand.slug %}">{{ forloop.counter }}: {{ brand.name }}</a>
 			{% endfor %}
 			<form class="border border-1 p-3" method="post" enctype="multipart/form-data"
 				  action="{% url 'create_brand' %}">

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} {{ name_page }} {% endblock %}
+
+
+{% block base-content %}
+	<div class="d-flex flex-column justify-content-start w-50 p-4">
+		<h4>{{ name_page }}</h4>
+
+		<form method="post" enctype="multipart/form-data">
+			<div style="color: red">{{ form.non_field_errors }}</div>
+			{% csrf_token %}
+			<div class="d-flex flex-row justify-content-end">
+				<a class="btn btn-danger " href="{% url 'delete_sub_feature' object.slug %}" type="submit">Удалить </a>
+			</div>
+			{% for input in form %}
+
+				<div>
+				<label for="{{ input.auto_id }}" class="form-label">{{ input.label_tag }}</label>
+				<div class="mb-3">{{ input }}</div>
+
+				<div id="{{ input.id_for_label }}help" class="form-text">{{ input.help_text }}</div>
+				<div style="color: red">{{ input.errors }}</div>
+			{% endfor %}
+			<br>
+			<div class="d-flex flex-row justify-content-end">
+				<div class="col-md-2 d-flex flex-row justify-content-end">
+					<button class="btn btn-warning" style="width: 130px" type="submit">Изменить</button>
+				</div>
+				<div class="col-md-2 d-flex flex-row justify-content-end">
+					<a class="btn btn-secondary" style="width: 130px" href="{% url 'list-characteristic' %}"
+					   type="submit">Отмена </a>
+				</div>
+			</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}
