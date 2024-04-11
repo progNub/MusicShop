@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	Заказ
+{% endblock %}
+
+{% block base-content %}
+	<div class="container w-50 mt-5">
+		<h2>Детали заказа</h2>
+
+		<div class="card mb-4">
+			<div class="card-header">
+				Заказ №{{ order.id }}
+			</div>
+
+			<div class="card-body">
+				<h5 class="card-title">Продукт: {{ order.product.name }}</h5>
+				<p class="card-text">Пользователь: {{ order.user.get_full_name }}</p>
+				<p class="card-text">Количество: {{ order.quantity }}</p>
+				<p class="card-text">Дата заказа: {{ order.date|date:"d M Y H:i" }}</p>
+				<p class="card-text">Статус оплаты: {{ order.payment_status|yesno:"Оплачено,Не оплачено" }}</p>
+				<p class="card-text">Статус заказа: {{ order.get_status_display }}</p>
+				<p class="card-text">Общая цена: {{ order.total_price }}</p>
+			</div>
+			<form method="post">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<div class="d-flex flex-row justify-content-end p-4">
+					<button class="btn btn-success mx-2" type="submit">
+						Обработать
+					</button>
+					<a class="btn btn-warning mx-2" type="submit"> Отменить </a>
+				</div>
+
+			</form>
+		</div>
+
+
+	</div>
+{% endblock %}

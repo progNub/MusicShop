@@ -1,20 +1,17 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import  DetailView, CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
+
+
 from common_models.models import ProductSubFeature
 from products.filters import ProductFilter
 from products.forms import ProductModelForm, ProductSubFeatureFormSetUpdate, ProductSubFeatureFormSetCreate
 from products.mixins import StaffOrSuperuserRequiredMixin
-from products.models import Product, ProductImage
-from django.db.models import F, Q
-from django.conf import settings
-from django.http import Http404
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.db.models import OuterRef, Subquery
+from products.models import Product
+from django.db.models import Q
+
 from django.urls import reverse_lazy
 from django.db import transaction
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponseForbidden
+
 from urllib.parse import urlencode
 
 
@@ -65,7 +62,6 @@ class Home(FilterView):
         return products
 
 
-
 class DetailProduct(DetailView):
     model = Product
     template_name = 'products/page_product.html'
@@ -101,7 +97,6 @@ class CreateProduct(StaffOrSuperuserRequiredMixin, CreateView):
     context_object_name = 'product'
     slug_url_kwarg = 'slug'
     form_class = ProductModelForm
-
 
     def __init__(self):
         super().__init__()
@@ -174,3 +169,10 @@ class DeleteProduct(StaffOrSuperuserRequiredMixin, DeleteView):
     template_name = 'products/delete_product.html'
     slug_url_kwarg = 'slug'
     success_url = reverse_lazy('home')
+
+
+
+
+
+
+

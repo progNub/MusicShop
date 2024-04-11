@@ -22,6 +22,7 @@ class Order(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     payment_status = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, blank=True, null=True, default=None)
+    delivery = models.ForeignKey('Deliveryman', on_delete=models.SET_NULL, null=True, blank=True, default=None)
 
     class Meta:
         db_table = 'order'
@@ -59,3 +60,17 @@ class Order(models.Model):
 
     def __repr__(self):
         return f'{self.__class__.__name__}{self.user} - {self.product} - {self.quantity}'
+
+
+class Deliveryman(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'delivery'
+        verbose_name = 'Курьер'
+        verbose_name_plural = 'Курьеры'
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'

@@ -16,7 +16,7 @@ class Product(models.Model):
                               related_name='products')
     features = models.ManyToManyField(SubFeature, through='common_models.ProductSubFeature')
     description = models.TextField(verbose_name='Описание')
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='Цена')
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=False, verbose_name='Цена')
     availability = models.BooleanField(default=True, verbose_name='Наличие')
     slug = models.SlugField(unique=True)
 

@@ -11,6 +11,7 @@ from products.models import Product, ProductImage
 from characteristic.models import Feature, SubFeature, Brand
 from django.contrib.auth import get_user_model
 from catalog.models import CatalogItem
+from card.models import Order
 from faker import Faker
 
 User = get_user_model()
@@ -132,7 +133,7 @@ def download_image(url):
     return django_file
 
 
-def create_products(count: int = 10):
+def create_products(count: int = 10, delete_all=True):
     print('Creating Products')
     Product.objects.all().delete()
 
@@ -165,12 +166,40 @@ def create_products(count: int = 10):
             product_image.save()
 
 
+def create_orders(count=10, delete_all=True):
+    print('Creating Orders')
+    Order.objects.all().delete()
+    users = list(User.objects.all())
+    products = list(Product.objects.all())
+    orders = []
+    unique = []
+    for i in range(count):
+        order = Order()
+        user = random.choice(users)
+        product = random.choice(products)
+        result = str(user) + str(product)
+
+        if result in unique:
+            continue
+        else:
+            unique.append(result)
+
+        order.user = user
+        order.product = product
+        order.quantity = random.randint(1, 3)
+        order.payment_status = False
+        order.status = Order.STATUS_CHOICES[1]
+        orders.append(order)
+
+    Order.objects.bulk_create(orders)
+
+
 if __name__ == '__main__':
-    # create_admin()
     # create_all_features()
-    #
     # CatalogItem.objects.all().delete()
     # create_catalog_structure()
     # create_brands()
-    # create_products(100)
-    create_users(50)
+    # create_products(30, True)
+    # create_users(5, False)
+    # create_admin()
+    create_orders(30, True)

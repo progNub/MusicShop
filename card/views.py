@@ -7,8 +7,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import json
 from django.http import JsonResponse
 
+from card.forms import ChooseDeliverymanForm
 from card.mixins import UserIsOrderOwnerMixin
 from card.models import Order
+from products.mixins import StaffOrSuperuserRequiredMixin
 
 
 class OrderListView(LoginRequiredMixin, ListView):
@@ -88,3 +90,31 @@ class UpdateProductQuantityInView(UserIsOrderOwnerMixin, View):
                  'message': 'Количество товара обновлено',
                  'new_quantity': new_quantity,
                  'new_price': order.total_price})
+
+
+class ListOrderProductConfirmView(StaffOrSuperuserRequiredMixin, ListView):
+    model = Order
+    template_name = 'card/order_list_for_confirm.html'
+    context_object_name = 'order_list'
+    paginate_by = 10
+    ordering = ('-date',)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset.filter(status='pending')
+        return queryset
+
+
+class ProcessingOrderView(StaffOrSuperuserRequiredMixin, UpdateView):
+    model = Order
+    template_name = 'card/processing_order.html'
+    pk_url_kwarg = 'pk'
+    form_class = ChooseDeliverymanForm
+    context_object_name = 'order'
+    success_url = reverse_lazy('orders')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.status = 'shipped'
+        self.object.save()
+        return super(ProcessingOrderView, self).form_valid(form)
