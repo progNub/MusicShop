@@ -65,7 +65,6 @@ class Home(FilterView):
         return products
 
 
-
 class DetailProduct(DetailView):
     model = Product
     template_name = 'products/page_product.html'
@@ -101,6 +100,7 @@ class CreateProduct(StaffOrSuperuserRequiredMixin, CreateView):
     context_object_name = 'product'
     slug_url_kwarg = 'slug'
     form_class = ProductModelForm
+
 
     def __init__(self):
         super().__init__()

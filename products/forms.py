@@ -2,7 +2,7 @@ from django import forms
 
 from common_models.forms import ProductSubFeatureForm
 from common_models.models import ProductSubFeature
-from .models import Product, CatalogItem, Brand, SubFeature
+from .models import Product, CatalogItem, Brand, SubFeature, ProductImage
 from django.forms import inlineformset_factory, BaseInlineFormSet
 from django.core.exceptions import ValidationError
 
@@ -61,7 +61,27 @@ ProductSubFeatureFormSetUpdate = inlineformset_factory(
 )
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = single_file_clean(data, initial)
+        return result
+
+
 class ProductModelForm(forms.ModelForm):
+    images = MultipleFileField(label='Select files', required=False)
+
     inlines = []
 
     class Meta:
@@ -79,3 +99,14 @@ class ProductModelForm(forms.ModelForm):
         super(ProductModelForm, self).__init__(*args, **kwargs)
         self.fields['category'].queryset = CatalogItem.objects.all()
         self.fields['brand'].queryset = Brand.objects.all()
+
+        # Переопределите метод save, если нужно обрабатывать загрузку изображения
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit:
+            instance.save()
+            # Обработка каждого загруженного файла
+            for f in self.files.getlist('images'):
+                ProductImage.objects.create(product=instance, image=f)
+        return instance

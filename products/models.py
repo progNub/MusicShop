@@ -4,7 +4,6 @@ from slugify import slugify
 from django.db import models
 from django.urls import reverse
 
-
 from catalog.models import CatalogItem
 from characteristic.models import Brand, SubFeature
 
