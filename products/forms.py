@@ -23,7 +23,10 @@ class CustomProductSubFeatureForm(ProductSubFeatureForm):
         value = self.cleaned_data.get('value')
         product = self.cleaned_data.get('product')
         product_sub_feature_list = ProductSubFeature.objects.filter(sub_feature=sub_feature, product=product)
-
+        print(product_sub_feature_list)
+        if not product_sub_feature_list:
+            print('Сохраняю новое')
+            return super().save(commit=True)
         for i in product_sub_feature_list:
             if not i.product == product and i.sub_feature == sub_feature and i.value == value:
                 print('новая запись')
@@ -32,30 +35,22 @@ class CustomProductSubFeatureForm(ProductSubFeatureForm):
                 print('изменение записи')
                 i.value = value
                 i.save()
+                return i
             elif i.id == product_sub_feature and (i.value != value or i.sub_feature != sub_feature):
                 i.value = value
                 i.sub_feature = sub_feature
                 i.save()
+                return i
             elif product_sub_feature == '' and sub_feature != i.sub_feature:
-                super().save(commit=True)
-
-        # if not product_sub_feature:
-        #     super().save(commit=True)
-
-        # _, temp = ProductSubFeature.objects.filter(sub_feature=sub_feature, product=product).delete()
-        # print(temp)
-        # if temp:
-        #     temp.value = value
-        #     temp.save()
+                return super().save(commit=True)
 
 
 ProductSubFeatureFormSetCreate = inlineformset_factory(
     Product,
     ProductSubFeature,
-    form=CustomProductSubFeatureForm,
+    form=ProductSubFeatureForm,
     extra=1,  # Количество пустых форм для начала
     can_delete=False,
-    fk_name='product'
 )
 
 ProductSubFeatureFormSetUpdate = inlineformset_factory(
@@ -64,12 +59,11 @@ ProductSubFeatureFormSetUpdate = inlineformset_factory(
     form=CustomProductSubFeatureForm,
     extra=0,  # Количество пустых форм для начала
     can_delete=True,
-    fk_name='product'
 )
 
 
 class ProductModelForm(forms.ModelForm):
-    inlines = [ProductSubFeatureFormSetCreate]
+    inlines = []
 
     class Meta:
         model = Product

@@ -13,6 +13,9 @@
 	<div class="d-flex flex-row justify-content-center w-100">
 		<div class="d-flex flex-column w-50">
 			<h1>Изменение товара</h1>
+			<div class="d-flex flex-row justify-content-end">
+				<a class="btn btn-danger" href="{% url 'delete-product' object.slug %}">Удалить Товар</a>
+			</div>
 			<form method="post" enctype="multipart/form-data">
 				<div style="color: red">{{ form.non_field_errors }}</div>
 				{% csrf_token %}

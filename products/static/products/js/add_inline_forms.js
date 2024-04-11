@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let totalForms = document.querySelector('input[name$="TOTAL_FORMS"]');
     let formCount = container.getElementsByClassName('inline-form').length;
 
+
     const updateTotalForms = () => {
         // Обновляем значение TOTAL_FORMS в соответствии с текущим количеством форм
         totalForms.value = formCount.toString();

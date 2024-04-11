@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django_filters.views import FilterView
 from common_models.models import ProductSubFeature
 from products.filters import ProductFilter
-from products.forms import ProductModelForm, ProductSubFeatureFormSetUpdate
+from products.forms import ProductModelForm, ProductSubFeatureFormSetUpdate, ProductSubFeatureFormSetCreate
 from products.models import Product, ProductImage
 from django.db.models import F, Q
 from django.conf import settings
@@ -58,7 +58,7 @@ class DetailProduct(DetailView):
     model = Product
     template_name = 'products/page_product.html'
     context_object_name = 'product'
-    slug_url_kwarg = 'product_slug'
+    slug_url_kwarg = 'slug'
     pk_kwarg = 'id'
 
     def get_queryset(self):
@@ -85,9 +85,14 @@ class DetailProduct(DetailView):
 
 class CreateProduct(CreateView):
     model = Product
-    template_name = 'products/update_product.html'
+    template_name = 'products/create_product.html'
     context_object_name = 'product'
+    slug_url_kwarg = 'slug'
     form_class = ProductModelForm
+
+    def __init__(self):
+        super().__init__()
+        self.form_class.inlines.append(ProductSubFeatureFormSetCreate)
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_staff or request.user.is_superuser:
@@ -97,18 +102,25 @@ class CreateProduct(CreateView):
     def get_context_data(self, **kwargs):
         context = super(CreateProduct, self).get_context_data(**kwargs)
         if 'formset' not in context:
-            formset = self.form_class.inlines[0](self.request.POST or None)
-
+            formset = ProductSubFeatureFormSetCreate(self.request.POST or None)
             context['formset'] = formset
         return context
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        print(response)
+        return response
 
     @transaction.atomic
     def form_valid(self, form: ProductModelForm):
         context = self.get_context_data()
         formset = context['formset']
         product = form.save(commit=False)
+        print(formset.data)
 
         if formset.is_valid():
+            print(formset.errors)
+            print(formset.cleaned_data)
             product.save()
             formset.instance = product
             formset.save()
@@ -128,6 +140,10 @@ class UpdateProduct(UpdateView):
     form_class = ProductModelForm
     slug_url_kwarg = 'slug'
 
+    def __init__(self):
+        super().__init__()
+        self.form_class.inlines.append(ProductSubFeatureFormSetUpdate)
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_staff or request.user.is_superuser:
             return super().dispatch(request, *args, **kwargs)
@@ -136,7 +152,7 @@ class UpdateProduct(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(UpdateProduct, self).get_context_data(**kwargs)
         if 'formset' not in context:
-            formset = ProductSubFeatureFormSetUpdate(self.request.POST or None, instance=self.object)
+            formset = self.form_class.inlines[0](self.request.POST or None, instance=self.object)
             context['formset'] = formset
         return context
 
@@ -156,14 +172,14 @@ class UpdateProduct(UpdateView):
     def get_success_url(self):
         return reverse_lazy('show-product', args=[self.object.slug])
 
-# class DeleteProduct(DeleteView):
-#     model = Product
-#     template_name = 'products/delete_product.html'
-#     slug_url_kwarg = 'product_slug'
-#     success_url = reverse_lazy(
-#         'product-list')  # Предполагается, что у вас есть URL с именем 'product-list' для списка товаров
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         if request.user.is_staff or request.user.is_superuser:
-#             return super().dispatch(request, *args, **kwargs)
-#         return HttpResponseForbidden()
+
+class DeleteProduct(DeleteView):
+    model = Product
+    template_name = 'products/delete_product.html'
+    slug_url_kwarg = 'slug'
+    success_url = reverse_lazy('home')
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_staff or request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        return HttpResponseForbidden()

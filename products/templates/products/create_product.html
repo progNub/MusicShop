@@ -41,7 +41,7 @@
 								<button type="button" class="btn btn-danger remove-form-btn">Удалить форму</button>
 							</div>
 							<div class="d-flex flex-column">
-								{{ formset.empty_form.as_p | safe }}
+								{{ form.as_p | safe }}
 							</div>
 						</div>
 					{% endfor %}
