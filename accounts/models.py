@@ -9,4 +9,11 @@ class User(AbstractUser):
         db_table = 'user'
 
 
+class AddressUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='address')
+    home = models.CharField(max_length=100, null=True, blank=True, verbose_name='Дом')
+    street = models.CharField(max_length=100, null=True, blank=True, verbose_name='Улица')
+    city = models.CharField(max_length=100, null=True, blank=True, verbose_name='Город')
 
+    def __str__(self):
+        return f"{self.user.username} - {self.home} {self.street} {self.city}"

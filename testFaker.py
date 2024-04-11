@@ -20,9 +20,15 @@ fake = Faker('ru-RU')
 
 def create_admin():
     print('Creating Admin')
-    User.objects.all().delete()
     user = User(username='admin', is_superuser=True, is_staff=True)
     user.set_password('admin')
+    user.save()
+
+
+def create_user():
+    print('Creating User')
+    user = User(username='user', is_superuser=False, is_staff=False)
+    user.set_password('user')
     user.save()
 
 
@@ -196,10 +202,10 @@ def create_orders(count=10, delete_all=True):
 
 if __name__ == '__main__':
     # create_all_features()
-    # CatalogItem.objects.all().delete()
     # create_catalog_structure()
     # create_brands()
-    # create_products(30, True)
+    # create_products(30, False)
     # create_users(5, False)
     # create_admin()
-    create_orders(30, True)
+    # create_orders(20, False)
+    create_user()

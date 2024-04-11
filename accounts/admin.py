@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import User
+from accounts.models import User, AddressUser
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -22,3 +22,8 @@ class UserAdmin(UserAdmin):
         ),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
+
+
+@admin.register(AddressUser)
+class AddressUserAdmin(admin.ModelAdmin):
+    list_display = ('home', 'street', 'city')
