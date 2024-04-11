@@ -17,22 +17,21 @@ class CustomProductSubFeatureForm(ProductSubFeatureForm):
         return super().is_valid()
 
     def save(self, commit=True):
-        print('Saving')
+
         product_sub_feature = self.cleaned_data.get('id')
         sub_feature = self.cleaned_data.get('sub_feature')
         value = self.cleaned_data.get('value')
         product = self.cleaned_data.get('product')
         product_sub_feature_list = ProductSubFeature.objects.filter(sub_feature=sub_feature, product=product)
-        print(product_sub_feature_list)
+
         if not product_sub_feature_list:
-            print('Сохраняю новое')
             return super().save(commit=True)
         for i in product_sub_feature_list:
             if not i.product == product and i.sub_feature == sub_feature and i.value == value:
-                print('новая запись')
+
                 return super().save(commit=True)
             elif i.product == product and i.sub_feature == sub_feature and i.value != value:
-                print('изменение записи')
+
                 i.value = value
                 i.save()
                 return i

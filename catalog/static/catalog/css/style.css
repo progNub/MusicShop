@@ -7,7 +7,6 @@
 }
 
 .catalog-item-0 {
-
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -23,7 +22,7 @@
 
 .catalog-item-0-name {
     display: flex;
-    width: 200px;
+    min-width: 300px;
     padding-right: 10px;
     padding-left: 10px;
     text-wrap: normal;

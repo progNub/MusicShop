@@ -29,7 +29,7 @@
 					</div>
 					<div class="catalog-item-1-container">
 						{% for child in node.children.all %}
-							<div class="col-2">
+							<div class="col-3">
 
 								<div class="catalog-item-1-name ">
 									<p>  {{ child.name }}</p>
@@ -38,7 +38,7 @@
 								{% for child_1 in child.children.all %}
 									<div class="catalog-item-2">
 										<div class="catalog-item-2-name">
-											<a href="{% url 'category' child_1.slug %}">{{ child_1.name }}</a>
+											<a class="text-decoration-none" href="{% url 'category' child_1.slug %}">{{ child_1.name }}</a>
 										</div>
 									</div>
 
