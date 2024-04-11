@@ -8,7 +8,7 @@ class ProductSubFeature(models.Model):
 
     class Meta:
         db_table = 'feature_product'
-        unique_together = ('product', 'sub_feature')
+        # unique_together = ('product', 'sub_feature')
 
     def __str__(self):
         return f"{self.product.name} - {self.sub_feature.name}: {self.value}"

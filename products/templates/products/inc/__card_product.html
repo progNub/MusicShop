@@ -1,4 +1,4 @@
-<a href="{{ product.get_absolute_url }}"  class="text-decoration-none">
+<a href="{{ product.get_absolute_url }}" class="text-decoration-none">
 	<div class="container-card-product">
 		<div class="card">
 			<div style="height: 200px; width: 100%;">
@@ -19,6 +19,10 @@
 					<input type="hidden" name="product_slug" value="{{ product.slug }}">
 					<input type="hidden" name="quantity" value="1" min="1">
 					<button class="btn btn-success" type="submit">Добавить в корзину</button>
+					{% if user.is_superuser or user.is_staff %}
+						<a href="{% url 'update_product' product.slug %}" class="btn btn-warning"
+						   type="submit">Изменить</a>
+					{% endif %}
 				</form>
 
 

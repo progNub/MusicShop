@@ -56,7 +56,6 @@
 							<input type="hidden" name="quantity" value="1" min="1">
 							<button class="btn btn-success" type="submit">Добавить в корзину</button>
 						</form>
-
 					</div>
 				</div>
 			</div>
@@ -90,6 +89,12 @@
 			</div>
 
 		</div>
+		{% if user.is_superuser or user.is_staff %}
+			<div class="d-flex flex-row justify-content-center">
+				<a href="{% url 'update_product' product.slug %}" class="btn btn-warning"
+				   type="submit">Изменить</a>
+			</div>
+		{% endif %}
 	</div>
 
 

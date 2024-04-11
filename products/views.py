@@ -2,12 +2,13 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django_filters.views import FilterView
 from common_models.models import ProductSubFeature
 from products.filters import ProductFilter
-from products.forms import ProductForm
+from products.forms import ProductModelForm, ProductSubFeatureFormSetUpdate
 from products.models import Product, ProductImage
 from django.db.models import F, Q
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.db.models import OuterRef, Subquery
 from django.urls import reverse_lazy
 from django.db import transaction
@@ -84,9 +85,9 @@ class DetailProduct(DetailView):
 
 class CreateProduct(CreateView):
     model = Product
-    template_name = 'products/create/create_product.html'
+    template_name = 'products/update_product.html'
     context_object_name = 'product'
-    form_class = ProductForm
+    form_class = ProductModelForm
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_staff or request.user.is_superuser:
@@ -97,11 +98,12 @@ class CreateProduct(CreateView):
         context = super(CreateProduct, self).get_context_data(**kwargs)
         if 'formset' not in context:
             formset = self.form_class.inlines[0](self.request.POST or None)
+
             context['formset'] = formset
         return context
 
     @transaction.atomic
-    def form_valid(self, form: ProductForm):
+    def form_valid(self, form: ProductModelForm):
         context = self.get_context_data()
         formset = context['formset']
         product = form.save(commit=False)
@@ -117,3 +119,51 @@ class CreateProduct(CreateView):
     def get_success_url(self):
         product = self.object
         return reverse_lazy('show-product', args=[product.slug])
+
+
+class UpdateProduct(UpdateView):
+    model = Product
+    template_name = 'products/update_product.html'
+    context_object_name = 'product'
+    form_class = ProductModelForm
+    slug_url_kwarg = 'slug'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_staff or request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        return HttpResponseForbidden()
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateProduct, self).get_context_data(**kwargs)
+        if 'formset' not in context:
+            formset = ProductSubFeatureFormSetUpdate(self.request.POST or None, instance=self.object)
+            context['formset'] = formset
+        return context
+
+    @transaction.atomic
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset: ProductSubFeatureFormSetUpdate = context['formset']
+        print('form_valid')
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return super(UpdateProduct, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('show-product', args=[self.object.slug])
+
+# class DeleteProduct(DeleteView):
+#     model = Product
+#     template_name = 'products/delete_product.html'
+#     slug_url_kwarg = 'product_slug'
+#     success_url = reverse_lazy(
+#         'product-list')  # Предполагается, что у вас есть URL с именем 'product-list' для списка товаров
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         if request.user.is_staff or request.user.is_superuser:
+#             return super().dispatch(request, *args, **kwargs)
+#         return HttpResponseForbidden()

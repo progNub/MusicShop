@@ -3,18 +3,73 @@ from django import forms
 from common_models.forms import ProductSubFeatureForm
 from common_models.models import ProductSubFeature
 from .models import Product, CatalogItem, Brand, SubFeature
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, BaseInlineFormSet
+from django.core.exceptions import ValidationError
 
-ProductSubFeatureFormSet = inlineformset_factory(
-    Product, ProductSubFeature,
-    form=ProductSubFeatureForm,
+
+class CustomProductSubFeatureForm(ProductSubFeatureForm):
+
+    def is_valid(self):
+        product_sub_feature = self.cleaned_data.get('id')
+        if self.cleaned_data.get('DELETE'):
+            if product_sub_feature:
+                ProductSubFeature.objects.get(id=product_sub_feature.id).delete()
+        return super().is_valid()
+
+    def save(self, commit=True):
+        print('Saving')
+        product_sub_feature = self.cleaned_data.get('id')
+        sub_feature = self.cleaned_data.get('sub_feature')
+        value = self.cleaned_data.get('value')
+        product = self.cleaned_data.get('product')
+        product_sub_feature_list = ProductSubFeature.objects.filter(sub_feature=sub_feature, product=product)
+
+        for i in product_sub_feature_list:
+            if not i.product == product and i.sub_feature == sub_feature and i.value == value:
+                print('новая запись')
+                return super().save(commit=True)
+            elif i.product == product and i.sub_feature == sub_feature and i.value != value:
+                print('изменение записи')
+                i.value = value
+                i.save()
+            elif i.id == product_sub_feature and (i.value != value or i.sub_feature != sub_feature):
+                i.value = value
+                i.sub_feature = sub_feature
+                i.save()
+            elif product_sub_feature == '' and sub_feature != i.sub_feature:
+                super().save(commit=True)
+
+        # if not product_sub_feature:
+        #     super().save(commit=True)
+
+        # _, temp = ProductSubFeature.objects.filter(sub_feature=sub_feature, product=product).delete()
+        # print(temp)
+        # if temp:
+        #     temp.value = value
+        #     temp.save()
+
+
+ProductSubFeatureFormSetCreate = inlineformset_factory(
+    Product,
+    ProductSubFeature,
+    form=CustomProductSubFeatureForm,
     extra=1,  # Количество пустых форм для начала
     can_delete=False,
+    fk_name='product'
+)
+
+ProductSubFeatureFormSetUpdate = inlineformset_factory(
+    Product,
+    ProductSubFeature,
+    form=CustomProductSubFeatureForm,
+    extra=0,  # Количество пустых форм для начала
+    can_delete=True,
+    fk_name='product'
 )
 
 
-class ProductForm(forms.ModelForm):
-    inlines = [ProductSubFeatureFormSet]
+class ProductModelForm(forms.ModelForm):
+    inlines = [ProductSubFeatureFormSetCreate]
 
     class Meta:
         model = Product
@@ -28,6 +83,6 @@ class ProductForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(ProductForm, self).__init__(*args, **kwargs)
+        super(ProductModelForm, self).__init__(*args, **kwargs)
         self.fields['category'].queryset = CatalogItem.objects.all()
         self.fields['brand'].queryset = Brand.objects.all()
