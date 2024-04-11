@@ -3,6 +3,7 @@ from django_filters.views import FilterView
 from common_models.models import ProductSubFeature
 from products.filters import ProductFilter
 from products.forms import ProductModelForm, ProductSubFeatureFormSetUpdate, ProductSubFeatureFormSetCreate
+from products.mixins import StaffOrSuperuserRequiredMixin
 from products.models import Product, ProductImage
 from django.db.models import F, Q
 from django.conf import settings
@@ -14,6 +15,7 @@ from django.urls import reverse_lazy
 from django.db import transaction
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseForbidden
+from urllib.parse import urlencode
 
 
 # Create your views here.
@@ -26,19 +28,28 @@ class Home(FilterView):
     paginate_by = 20
     filterset_class = ProductFilter
 
+    from urllib.parse import urlencode
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         search_product = self.request.GET.get('search_product')
-        context.update({'search_product': search_product})
+        sort_search = self.request.GET.get('sort')
+
+        # Создаём копию объекта запроса, чтобы можно было изменять параметры
+        get_copy = self.request.GET.copy()
+        if 'page' in get_copy:
+            del get_copy['page']  # Удаляем параметр 'page', чтобы избежать конфликтов
+
+        # Создаём строку запроса для использования в шаблоне
+        context['get_params'] = urlencode(get_copy)
+
+        context.update({'search_product': search_product, 'sort_search': sort_search})
         return context
 
     def get_queryset(self):
-        products = Product.objects.filter(availability=True).order_by('id')
+        products = Product.objects.filter(availability=True).order_by('name')
         products = products.select_related('brand')
-        image = ProductImage.objects.filter(
-            product=OuterRef('pk')
-        ).order_by('id')[:1]
-        products = products.annotate(image=Subquery(image.values('image')[:1]))
+        products = products.prefetch_related('images')
 
         sort_search = self.request.GET.get('sort')
         if sort_search:
@@ -52,6 +63,7 @@ class Home(FilterView):
             products = products.filter(Q(name__icontains=query_search) | Q(
                 description__icontains=query_search))
         return products
+
 
 
 class DetailProduct(DetailView):
@@ -83,7 +95,7 @@ class DetailProduct(DetailView):
         return context
 
 
-class CreateProduct(CreateView):
+class CreateProduct(StaffOrSuperuserRequiredMixin, CreateView):
     model = Product
     template_name = 'products/create_product.html'
     context_object_name = 'product'
@@ -94,11 +106,6 @@ class CreateProduct(CreateView):
         super().__init__()
         self.form_class.inlines.append(ProductSubFeatureFormSetCreate)
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_staff or request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        return HttpResponseForbidden()
-
     def get_context_data(self, **kwargs):
         context = super(CreateProduct, self).get_context_data(**kwargs)
         if 'formset' not in context:
@@ -106,21 +113,13 @@ class CreateProduct(CreateView):
             context['formset'] = formset
         return context
 
-    def get(self, request, *args, **kwargs):
-        response = super().get(request, *args, **kwargs)
-        print(response)
-        return response
-
     @transaction.atomic
     def form_valid(self, form: ProductModelForm):
         context = self.get_context_data()
         formset = context['formset']
         product = form.save(commit=False)
-        print(formset.data)
 
         if formset.is_valid():
-            print(formset.errors)
-            print(formset.cleaned_data)
             product.save()
             formset.instance = product
             formset.save()
@@ -133,21 +132,17 @@ class CreateProduct(CreateView):
         return reverse_lazy('show-product', args=[product.slug])
 
 
-class UpdateProduct(UpdateView):
+class UpdateProduct(StaffOrSuperuserRequiredMixin, UpdateView):
     model = Product
     template_name = 'products/update_product.html'
     context_object_name = 'product'
     form_class = ProductModelForm
     slug_url_kwarg = 'slug'
+    queryset = Product.objects.prefetch_related('')
 
     def __init__(self):
         super().__init__()
         self.form_class.inlines.append(ProductSubFeatureFormSetUpdate)
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_staff or request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        return HttpResponseForbidden()
 
     def get_context_data(self, **kwargs):
         context = super(UpdateProduct, self).get_context_data(**kwargs)
@@ -173,13 +168,8 @@ class UpdateProduct(UpdateView):
         return reverse_lazy('show-product', args=[self.object.slug])
 
 
-class DeleteProduct(DeleteView):
+class DeleteProduct(StaffOrSuperuserRequiredMixin, DeleteView):
     model = Product
     template_name = 'products/delete_product.html'
     slug_url_kwarg = 'slug'
     success_url = reverse_lazy('home')
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_staff or request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        return HttpResponseForbidden()
