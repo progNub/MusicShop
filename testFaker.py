@@ -11,7 +11,9 @@ from products.models import Product, ProductImage
 from characteristic.models import Feature, SubFeature, Brand
 from django.contrib.auth import get_user_model
 from catalog.models import CatalogItem
-from card.models import Order
+from card.models import Order, Deliveryman
+
+from accounts.models import AddressUser
 from faker import Faker
 
 User = get_user_model()
@@ -200,6 +202,40 @@ def create_orders(count=10, delete_all=True):
     Order.objects.bulk_create(orders)
 
 
+def create_address(count=2, delete_all=False):
+    print('Creating Address')
+    if delete_all:
+        AddressUser.objects.all().delete()
+
+    users = list(User.objects.all())
+
+    addresses = []
+    for user in users:
+        for i in range(count):
+            address = AddressUser()
+            address.user = user
+            address.city = fake.city()
+            address.street = fake.street_name()
+            address.home = fake.building_number()
+            addresses.append(address)
+    AddressUser.objects.bulk_create(addresses)
+
+
+
+def create_deliveryman(count=5, delete_all=False):
+    print('Creating Deliveryman')
+    if delete_all:
+        Deliveryman.objects.all().delete()
+    deliveryman_list = []
+    for i in range(count):
+        deliveryman = Deliveryman()
+        deliveryman.first_name = fake.unique.first_name()
+        deliveryman.last_name = fake.unique.last_name()
+        deliveryman.phone = fake.unique.msisdn()
+        deliveryman_list.append(deliveryman)
+    Deliveryman.objects.bulk_create(deliveryman_list)
+
+
 if __name__ == '__main__':
     # create_all_features()
     # create_catalog_structure()
@@ -208,4 +244,6 @@ if __name__ == '__main__':
     # create_users(5, False)
     # create_admin()
     # create_orders(20, False)
-    create_user()
+    # create_user()
+    # create_address(3, False)
+    create_deliveryman()

@@ -51,3 +51,5 @@ class UserAuthenticationForm(AuthenticationForm):
                                widget=forms.PasswordInput(attrs={'class': 'form-control',
                                                                  'id': 'loginInputPassword1',
                                                                  'placeholder': 'Введите пароль'}))
+
+

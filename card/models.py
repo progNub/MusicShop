@@ -23,6 +23,8 @@ class Order(models.Model):
     payment_status = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, blank=True, null=True, default=None)
     delivery = models.ForeignKey('Deliveryman', on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    address = models.ForeignKey('accounts.AddressUser', on_delete=models.SET_NULL, null=True, blank=True,
+                                verbose_name='Адрес доставки')
 
     class Meta:
         db_table = 'order'

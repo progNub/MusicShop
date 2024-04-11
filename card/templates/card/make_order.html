@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+
+{% block title %}
+	Оформление
+{% endblock %}
+
+{% block base-content %}
+	<div class="container mt-5">
+		<h2>Оформление заказа</h2>
+		<form method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit" class="btn btn-success">Оформить заказ</button>
+		</form>
+	</div>
+{% endblock %}

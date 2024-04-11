@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import json
 from django.http import JsonResponse
 
-from card.forms import ChooseDeliverymanForm
+from card.forms import ChooseDeliverymanForm, AddressSelectionForm
 from card.mixins import UserIsOrderOwnerMixin
 from card.models import Order
 from products.mixins import StaffOrSuperuserRequiredMixin
@@ -101,7 +101,7 @@ class ListOrderProductConfirmView(StaffOrSuperuserRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset.filter(status='pending')
+        queryset = queryset.filter(status='pending')  # Применяем фильтр и присваиваем результат переменной
         return queryset
 
 
@@ -118,3 +118,24 @@ class ProcessingOrderView(StaffOrSuperuserRequiredMixin, UpdateView):
         self.object.status = 'shipped'
         self.object.save()
         return super(ProcessingOrderView, self).form_valid(form)
+
+
+class MakeOrderView(UserIsOrderOwnerMixin,UpdateView):
+    model = Order
+    template_name = 'card/make_order.html'
+    pk_url_kwarg = 'pk'
+    form_class = AddressSelectionForm
+    context_object_name = 'order'
+    success_url = reverse_lazy('orders')
+
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # Добавляем текущего пользователя в аргументы формы
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.status = 'pending'
+        self.object.save()
+        return super(MakeOrderView, self).form_valid(form)

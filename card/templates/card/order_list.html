@@ -72,9 +72,10 @@
 
 											<form>
 												{% csrf_token %}
-												{#											TODO: добавить логику оформления заказа#}
-												<button class="btn btn-success" type="submit"> Перейти к оформлению
-												</button>
+
+												<a class="btn btn-success" href="{% url 'make_order' i.pk %}"> Перейти к
+													оформлению
+												</a>
 											</form>
 										</div>
 									</div>
