@@ -12,6 +12,8 @@ pillow = "^10.2.0"
 python-slugify = "^8.0.4"
 django-mptt = "^0.16.0"
 django-filter = "^24.2"
+psycopg2 = "^2.9.9"
+python-dotenv = "^1.0.1"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -12,20 +12,22 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+# Это загрузит переменные окружения из файла .env, который находится в базовом каталоге проекта
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l!y!9zxo^b(vpe%by!k=dg*bn&u%_66a@n#pgx75z62@h^k%r^'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-k0*2g+p7gb#*36#9ap9lnzem&$#6voy%nayu1e4(s75-%wmcjh')
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+ALLOWED_HOSTS = ['*']
+#
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
@@ -49,8 +51,10 @@ INSTALLED_APPS = [
     'common_models.apps.CommonModelsConfig',
     'card.apps.CardConfig',
     'django_filters',
-    "debug_toolbar",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar", ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,8 +64,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+if DEBUG:
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware", ]
 
 ROOT_URLCONF = 'MusicalStore.urls'
 
@@ -87,15 +92,25 @@ WSGI_APPLICATION = 'MusicalStore.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DATABASE_NAME'),
+            "USER": os.environ.get('DATABASE_USER'),
+            "PASSWORD": os.environ.get('DATABASE_PASSWORD'),
+            "HOST": os.environ.get('DATABASE_HOST'),
+            "PORT": 5432,
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -130,6 +145,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / 'all_static'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),

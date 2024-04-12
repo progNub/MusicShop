@@ -22,6 +22,9 @@ fake = Faker('ru-RU')
 
 def create_admin():
     print('Creating Admin')
+    user = User.objects.filter(username='admin').first()
+    if user:
+        user.delete()
     user = User(username='admin', is_superuser=True, is_staff=True)
     user.set_password('admin')
     user.save()
@@ -29,6 +32,9 @@ def create_admin():
 
 def create_user():
     print('Creating User')
+    user = User.objects.filter(username='user').first()
+    if user:
+        user.delete()
     user = User(username='user', is_superuser=False, is_staff=False)
     user.set_password('user')
     user.save()
@@ -85,8 +91,12 @@ def create_all_features():
     create_sub_features(10)
 
 
-def create_brands(count: int = 10):
+def create_brands(count: int = 10, delete_all=True):
     print('Creating Brands')
+    if delete_all:
+        print('Delete all Brands')
+        Brand.objects.all().delete()
+
     Brand.objects.all().delete()
     brands = []
     for i in range(count):
@@ -97,8 +107,9 @@ def create_brands(count: int = 10):
     Brand.objects.bulk_create(brands)
 
 
-def create_catalog_structure(parent=None, depth=3, current_level=1):
+def _create_catalog_structure(parent=None, depth=3, current_level=1):
     print('Creating Catalog Structure')
+
     if depth < 1 or current_level > depth:
         return
 
@@ -107,13 +118,24 @@ def create_catalog_structure(parent=None, depth=3, current_level=1):
 
     for _ in range(num_items):
         catalog_item = CatalogItem()
-        catalog_item.name = str(current_level) + '_Catalog_' + fake.unique.word()
+        name = fake.unique.word()
+        print(name)
+        if len(name) > 49:
+            name = name[:49]
+        catalog_item.name = name
         catalog_item.parent = parent
         catalog_item.save()  # Сохраняем элемент, чтобы получить его slug и возможность добавления дочерних элементов
 
         # Рекурсивно создаем дочерние элементы, если не достигнута максимальная глубина
         if current_level < depth:
-            create_catalog_structure(parent=catalog_item, depth=depth, current_level=current_level + 1)
+            _create_catalog_structure(parent=catalog_item, depth=depth, current_level=current_level + 1)
+
+
+def create_catalog(delete_all=True):
+    if delete_all:
+        print('Delete all Catalog')
+        CatalogItem.objects.all().delete()
+    _create_catalog_structure()
 
 
 def generate_image_url(width=1280, height=720, text='hello world'):
@@ -176,7 +198,9 @@ def create_products(count: int = 10, delete_all=True):
 
 def create_orders(count=10, delete_all=True):
     print('Creating Orders')
-    Order.objects.all().delete()
+    if delete_all:
+        print('Delete all Orders')
+        Order.objects.all().delete()
     users = list(User.objects.all())
     products = list(Product.objects.all())
     orders = []
@@ -196,7 +220,7 @@ def create_orders(count=10, delete_all=True):
         order.product = product
         order.quantity = random.randint(1, 3)
         order.payment_status = False
-        order.status = Order.STATUS_CHOICES[1]
+        order.status = 'pending'
         orders.append(order)
 
     Order.objects.bulk_create(orders)
@@ -221,9 +245,8 @@ def create_address(count=2, delete_all=False):
     AddressUser.objects.bulk_create(addresses)
 
 
-
 def create_deliveryman(count=5, delete_all=False):
-    print('Creating Deliveryman')
+    print('Creating Deliveryman ', count)
     if delete_all:
         Deliveryman.objects.all().delete()
     deliveryman_list = []
@@ -237,13 +260,13 @@ def create_deliveryman(count=5, delete_all=False):
 
 
 if __name__ == '__main__':
-    # create_all_features()
-    # create_catalog_structure()
-    # create_brands()
-    # create_products(30, False)
-    # create_users(5, False)
-    # create_admin()
-    # create_orders(20, False)
-    # create_user()
-    # create_address(3, False)
-    create_deliveryman()
+    create_all_features()
+    create_catalog(delete_all=True)
+    create_brands(delete_all=True)
+    create_products(10, False)
+    create_users(5, True)
+    create_orders(10, True)
+    create_address(3, True)
+    create_deliveryman(delete_all=True)
+    create_user()
+    create_admin()
