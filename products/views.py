@@ -134,7 +134,6 @@ class UpdateProduct(StaffOrSuperuserRequiredMixin, UpdateView):
     context_object_name = 'product'
     form_class = ProductModelForm
     slug_url_kwarg = 'slug'
-    queryset = Product.objects.prefetch_related('')
 
     def __init__(self):
         super().__init__()
