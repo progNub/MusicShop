@@ -5,3 +5,4 @@ class CardConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'card'
     verbose_name = 'Заказы'
+

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'common_models.apps.CommonModelsConfig',
     'card.apps.CardConfig',
     'django_filters',
+    'django_extensions',
 ]
 
 if DEBUG:
@@ -152,6 +153,7 @@ STATIC_ROOT = BASE_DIR / 'all_static'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

@@ -111,7 +111,7 @@ class ProcessingOrderView(StaffOrSuperuserRequiredMixin, UpdateView):
     pk_url_kwarg = 'pk'
     form_class = ChooseDeliverymanForm
     context_object_name = 'order'
-    success_url = reverse_lazy('orders')
+    success_url = reverse_lazy('list_orders_for_confirm')
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
