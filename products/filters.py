@@ -48,7 +48,7 @@ class ProductFilter(django_filters.FilterSet):
     price = django_filters.RangeFilter(widget=CustomRangeWidget())
 
     brand = django_filters.ModelMultipleChoiceFilter(
-        queryset=Brand.objects.all(),
+        queryset=Brand.objects.annotate(products_count=Count('products')).filter(products_count__gt=0),
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check'}),
         field_name='brand',
         label='Производитель'
