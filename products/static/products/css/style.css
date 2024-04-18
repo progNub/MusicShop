@@ -1,23 +1,9 @@
 .home-main-container {
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: start;
-}
-
-
-.container-products {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 85%;
-}
-
-.list-products {
-    display: flex;
     flex-direction: row;
+    width: 90%;
     justify-content: space-between;
-    width: 80%;
+    flex-wrap: wrap;
 }
 
 
@@ -35,9 +21,6 @@
 
 }
 
-.card-group {
-    justify-content: flex-end;
-}
 
 .content-detail-product {
     display: flex;
@@ -85,7 +68,6 @@
     width: 50%;
 }
 
-
 .container-description {
     display: flex;
     flex-direction: column;
@@ -98,5 +80,21 @@
     justify-content: center;
     width: 100%;
 }
+
+.base-container-list-filter-product {
+    display: flex;
+
+}
+
+
+.base-container-list-product {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    min-width: 300px;
+
+}
+
 
 

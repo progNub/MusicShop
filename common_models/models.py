@@ -8,6 +8,8 @@ class ProductSubFeature(models.Model):
 
     class Meta:
         db_table = 'feature_product'
+        verbose_name = 'Характеристика товара'
+        verbose_name_plural = 'Характеристики товаров'
         # unique_together = ('product', 'sub_feature')
 
     def __str__(self):

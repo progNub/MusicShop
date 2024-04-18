@@ -1,6 +1,5 @@
-from django.views.generic import  DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
-
 
 from common_models.models import ProductSubFeature
 from products.filters import ProductFilter
@@ -30,7 +29,6 @@ class Home(FilterView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         search_product = self.request.GET.get('search_product')
-        sort_search = self.request.GET.get('sort')
 
         # Создаём копию объекта запроса, чтобы можно было изменять параметры
         get_copy = self.request.GET.copy()
@@ -39,21 +37,13 @@ class Home(FilterView):
 
         # Создаём строку запроса для использования в шаблоне
         context['get_params'] = urlencode(get_copy)
-
-        context.update({'search_product': search_product, 'sort_search': sort_search})
+        context.update({'search_product': search_product})
         return context
 
     def get_queryset(self):
         products = Product.objects.filter(availability=True).order_by('name')
         products = products.select_related('brand')
         products = products.prefetch_related('images')
-
-        sort_search = self.request.GET.get('sort')
-        if sort_search:
-            if sort_search == 'cheap':
-                products = products.order_by('price')
-            elif sort_search == 'expensive':
-                products = products.order_by('-price')
 
         query_search = self.request.GET.get('search_product')
         if query_search:
@@ -168,10 +158,3 @@ class DeleteProduct(StaffOrSuperuserRequiredMixin, DeleteView):
     template_name = 'products/delete_product.html'
     slug_url_kwarg = 'slug'
     success_url = reverse_lazy('home')
-
-
-
-
-
-
-

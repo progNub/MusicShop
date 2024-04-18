@@ -1,10 +1,7 @@
 # filters.py
-import django_filters
-from django import forms
-
 from characteristic.models import Brand
-from .models import Product
 from django_filters import widgets
+from django.db.models import Count
 import django_filters
 from django import forms
 from .models import Product
@@ -21,23 +18,34 @@ from .models import Product
 
 class CustomRangeWidget(widgets.RangeWidget):
     def __init__(self, attrs=None):
+        attrs = attrs or {}  # Убедитесь, что attrs не None
+        attrs.update({'class': 'form-control mr-2'})  # Добавляем общий класс к виджету
         super().__init__(attrs)
-        # Установка разных плейсхолдеров для каждого поля
-        self.widgets[0].attrs.update({'placeholder': 'От', 'class': 'form-control'})
-        self.widgets[1].attrs.update({'placeholder': 'До', 'class': 'form-control'})
+        self.widgets[0].attrs.update({'placeholder': 'Цена от', })
+        self.widgets[1].attrs.update({'placeholder': 'Цена до', })
 
 
 class ProductFilter(django_filters.FilterSet):
+    sort_by = django_filters.ChoiceFilter(
+        choices=[
+            ('price', 'По возрастанию'),
+            ('-price', 'По убыванию'),
+        ],
+        method='sort_by_method',
+        label='Сортировка:',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     class Meta:
         model = Product
-        fields = {
-            'price': ['lt', 'gt'],
-            'brand': ['exact'],
-            # Добавьте другие поля, по которым хотите фильтровать
-        }
+        fields = [
+            'sort_by',
+            'brand',
+            'price',
 
-    price = django_filters.RangeFilter(
-        widget=CustomRangeWidget())
+        ]
+
+    price = django_filters.RangeFilter(widget=CustomRangeWidget())
 
     brand = django_filters.ModelMultipleChoiceFilter(
         queryset=Brand.objects.all(),
@@ -47,3 +55,19 @@ class ProductFilter(django_filters.FilterSet):
     )
 
     # Добавьте другие виджеты для других полей, если это необходимо
+
+    def sort_by_method(self, queryset, name, value):
+        print('Sort price method')
+        print(self.data)
+
+        if value is not None:
+            if value == '-price':
+                return queryset.order_by('-price')
+            elif value == 'price':
+                return queryset.order_by('price')
+
+    def is_valid(self):
+        is_valid = super().is_valid()
+        print(self.data)
+
+        return is_valid

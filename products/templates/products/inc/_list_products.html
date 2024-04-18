@@ -1,10 +1,13 @@
-<div class="d-flex flex-column" style="width: 300px">
+<div class="base-container-list-filter-product p-2">
 	{% include 'products/inc/__filter_products.html' %}
 </div>
-<div class="card-group">
+
+
+<div class="base-container-list-product">
 	{% for product in products %}
 		{% include 'products/inc/__card_product.html' %}
 	{% endfor %}
+
 </div>
 
 
