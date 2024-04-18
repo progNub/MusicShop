@@ -21,9 +21,15 @@ class Product(models.Model):
     slug = models.SlugField(unique=True)
 
     def get_main_image(self):
-        main_image = self.images.first()
-        if main_image:
-            return main_image.image.url
+        # Проверка наличия предварительно загруженных изображений
+        if hasattr(self, '_prefetched_objects_cache') and 'images' in self._prefetched_objects_cache:
+            images = self._prefetched_objects_cache['images']
+            if images:
+                return images[0].image.url
+        else:
+            main_image = self.images.first()
+            if main_image:
+                return main_image.image.url
         return None
 
     def get_absolute_url(self):
