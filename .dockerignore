@@ -1,0 +1,15 @@
+*
+!accounts
+!card
+!catalog
+!characteristic
+!common_models
+!MusicalStore
+!products
+!global_static
+!templates
+!manage.py
+!testFaker.py
+!pyproject.toml
+!poetry.lock
+!run.sh
