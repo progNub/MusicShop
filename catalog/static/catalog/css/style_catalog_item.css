@@ -1,0 +1,9 @@
+.delete_item svg {
+    opacity: 70%;
+}
+
+
+.delete_item:hover svg {
+    opacity: 100%;
+
+}

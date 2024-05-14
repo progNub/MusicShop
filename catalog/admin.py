@@ -10,4 +10,5 @@ from catalog.models import CatalogItem
 
 @admin.register(CatalogItem)
 class CatalogItemAdmin(DraggableMPTTAdmin):
-    exclude = ('slug',)
+    list_display = ("id", 'level', "tree_actions", "indented_title", 'slug', 'parent',)
+    list_display_links = ("id", "level", "indented_title",)
