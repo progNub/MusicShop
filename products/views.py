@@ -13,9 +13,7 @@ from django.db import transaction
 
 from urllib.parse import urlencode
 
-
 # Create your views here.
-
 
 class Home(FilterView):
     model = Product
