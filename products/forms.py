@@ -1,10 +1,8 @@
 from django import forms
-
 from common_models.forms import ProductSubFeatureForm
 from common_models.models import ProductSubFeature
-from .models import Product, CatalogItem, Brand, SubFeature, ProductImage
-from django.forms import inlineformset_factory, BaseInlineFormSet
-from django.core.exceptions import ValidationError
+from .models import Product, CatalogItem, Brand, ProductImage
+from django.forms import inlineformset_factory
 
 
 class CustomProductSubFeatureForm(ProductSubFeatureForm):
@@ -100,13 +98,10 @@ class ProductModelForm(forms.ModelForm):
         self.fields['category'].queryset = CatalogItem.objects.all()
         self.fields['brand'].queryset = Brand.objects.all()
 
-        # Переопределите метод save, если нужно обрабатывать загрузку изображения
-
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit:
             instance.save()
-            # Обработка каждого загруженного файла
             for f in self.files.getlist('images'):
                 ProductImage.objects.create(product=instance, image=f)
         return instance

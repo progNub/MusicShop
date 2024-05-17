@@ -138,7 +138,6 @@ class UpdateProduct(StaffOrSuperuserRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         formset: ProductSubFeatureFormSetUpdate = context['formset']
-        print('form_valid')
         if formset.is_valid():
             self.object = form.save()
             formset.instance = self.object
