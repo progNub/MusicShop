@@ -6,5 +6,5 @@ class ProductsConfig(AppConfig):
     name = 'products'
     verbose_name = 'Товары'
 
-    def ready(self):
-        import products.signals.delete_photo_product
+    # def ready(self):
+    #     import products.signals.delete_photo_product

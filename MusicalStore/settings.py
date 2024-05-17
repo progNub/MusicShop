@@ -145,6 +145,28 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'global_static'),
 ]
 
+STORAGES = {
+    "default": {
+        "BACKEND": "backend_storages.s3.CustomS3MediaStorage",
+        "OPTIONS": {
+            'endpoint_url': os.environ.get("MINIO_ENDPOINT"),
+            'access_key': os.environ.get("MINIO_ACCESS_KEY"),
+            'secret_key': os.environ.get("MINIO_SECRET_KEY"),
+            'bucket_name': os.environ.get("MINIO_BUCKET_NAME"),
+            'default_acl': 'public_read',
+            'url_protocol': 'http',
+            'gzip': True,
+            'file_overwrite': False,
+
+        },
+    },
+    "staticfiles": {
+        "BACKEND": 'django.contrib.staticfiles.storage.StaticFilesStorage'
+    }
+}
+
+# Создаем директорию для логов, если она не существует
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
