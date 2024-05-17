@@ -165,6 +165,55 @@ STORAGES = {
     }
 }
 
+if not DEBUG:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.environ.get("REDIS_CACHE_URL"),
+        }
+    }
+
+
+# Логирование ------------------------------------------------------------------------------------------------
+LOG_DIR = BASE_DIR / 'logs'
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file_info': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR / 'django_info.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        BASE_DIR.name: {
+            'handlers': ['file_info', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+# Логирование ------------------------------------------------------------------------------------------------
+
+
 # Создаем директорию для логов, если она не существует
 
 # Default primary key field type

@@ -1,6 +1,11 @@
 version: "3.12"
 
 services:
+
+  cache-redis:
+    container_name: cache-redis
+    image: redis:7.2.4-alpine
+
   db:
     image: postgres
     restart: always
@@ -22,6 +27,7 @@ services:
       - '.env'
     environment:
       DATABASE_HOST: db
+      REDIS_CACHE_URL: "redis://cache-redis:6379"
     command: /bin/sh run.sh
     volumes:
       - './logs:/app/logs'
@@ -66,3 +72,7 @@ services:
       - "./static:/var/www/static:ro"
     depends_on:
       - django_musical_store
+
+
+
+
