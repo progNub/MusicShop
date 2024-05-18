@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'common_models.apps.CommonModelsConfig',
     'card.apps.CardConfig',
     'django_filters',
-    'django_extensions',
 ]
 
 if DEBUG:

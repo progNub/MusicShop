@@ -35,13 +35,10 @@ class CatalogItem(MPTTModel):
         child_prefetch = Prefetch('children', queryset=CatalogItem.objects.all().prefetch_related(
             Prefetch('children', queryset=CatalogItem.objects.all())))
         queryset = CatalogItem.objects.filter(level=0).prefetch_related(child_prefetch)
-
         # Преобразование QuerySet в список перед кешированием
         items_list = list(queryset)
-
         # Кеширование на 1 час (или другое удобное вам время)
         cache.set(cache_key, items_list, timeout=3600)
-
         return items_list
 
     @classmethod
