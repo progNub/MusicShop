@@ -34,5 +34,7 @@ urlpatterns = [
     path('product/', include('products.urls')),
 
     path("__debug__/", include("debug_toolbar.urls")),
+
+    path('', include('django_prometheus.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

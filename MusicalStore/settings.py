@@ -51,12 +51,15 @@ INSTALLED_APPS = [
     'common_models.apps.CommonModelsConfig',
     'card.apps.CardConfig',
     'django_filters',
+    'django_prometheus',
 ]
 
 if DEBUG:
     INSTALLED_APPS += ["debug_toolbar", ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 if DEBUG:
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware", ]
@@ -96,7 +100,7 @@ WSGI_APPLICATION = 'MusicalStore.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django_prometheus.db.backends.postgresql',
         'NAME': os.environ.get('DATABASE_NAME'),
         "USER": os.environ.get('DATABASE_USER'),
         "PASSWORD": os.environ.get('DATABASE_PASSWORD'),
@@ -167,11 +171,10 @@ STORAGES = {
 if not DEBUG:
     CACHES = {
         "default": {
-            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
             "LOCATION": os.environ.get("REDIS_CACHE_URL"),
         }
     }
-
 
 # Логирование ------------------------------------------------------------------------------------------------
 LOG_DIR = BASE_DIR / 'logs'

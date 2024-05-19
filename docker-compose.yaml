@@ -17,7 +17,7 @@ services:
       - "./compose/pg_data:/var/lib/postgresql/data"
 
 
-  django_musical_store:
+  django-musical-store:
     image: musical_store:0.1
     build:
       context: .
@@ -80,7 +80,19 @@ services:
       - "./service/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
       - "./static:/var/www/static:ro"
     depends_on:
-      - django_musical_store
+      - django-musical-store
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command: --config.file=/etc/prometheus/prometheus.yaml
+    volumes:
+      - "./compose/prometheus.yaml:/etc/prometheus/prometheus.yaml"
+    ports:
+      - "9090:9090"
+    depends_on:
+    - django-musical-store
+
 
 
 
