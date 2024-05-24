@@ -85,9 +85,10 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+    restart: always
     command: --config.file=/etc/prometheus/prometheus.yaml
     volumes:
-      - "./compose/prometheus.yaml:/etc/prometheus/prometheus.yaml"
+      - "./service/prometheus.yaml:/etc/prometheus/prometheus.yaml"
     ports:
       - "9090:9090"
     depends_on:
@@ -100,6 +101,8 @@ services:
       - "3000:3000"
     volumes:
       - './compose/grafana_data:/var/lib/grafana'
+
+
 
 
 

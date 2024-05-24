@@ -1,0 +1,40 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+
+#remote_write:
+#  - url: "http://influxdb2:8086/api/v2/write?org=myorg&bucket=mybucket&precision=ns"
+#    bearer_token: "my-super-secret-auth-token"
+#remote_write:
+#  - url: "http://influxdb2:8086/api/v1/prom/write?db=prometheus"
+
+
+alerting:
+  alertmanagers:
+    - follow_redirects: true
+      enable_http2: true
+      scheme: http
+      timeout: 10s
+      api_version: v2
+      static_configs:
+        - targets: [ ]
+
+scrape_configs:
+  - job_name: prometheus
+    honor_timestamps: true
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - localhost:9090
+
+  - job_name: 'django'
+    scrape_interval: 10s
+    metrics_path: /metrics
+    static_configs:
+      - targets: [ "django-musical-store:8000" ]

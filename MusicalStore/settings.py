@@ -26,11 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-k0*2g+p7gb#*36#9ap9lnzem&$#6voy%nayu1e4(s75-%wmcjh')
 DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
-ALLOWED_HOSTS = ['*']
-#
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
+
+ALLOWED_HOSTS = ["*"]
+INTERNAL_IPS = ["127.0.0.1"]
 
 AUTH_USER_MODEL = "accounts.User"
 
