@@ -3,7 +3,9 @@ from django.db import models
 
 
 class User(AbstractUser):
-    phone = models.CharField(max_length=50, null=True, blank=True)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=50, null=True, blank=True, verbose_name="Номер телефона")
+    is_confirmed_email = models.BooleanField(default=False, blank=True, null=False, verbose_name="статус email")
 
     class Meta:
         db_table = 'user'

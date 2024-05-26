@@ -1,0 +1,10 @@
+{% autoescape off %}
+	<p>Уважаемый {{ user.username }}, спасибо за регистрацию.</p>
+	<br>
+	<p>Что бы подтвердить email нажмите ссылку ниже.</p>
+	<br>
+	<p>Ссылка действительна в течении {{ life_time }} минут, затем регистрацию нужно будет повторить.</p>
+	<br>
+	<a href="http://{{ domain }}{% url 'registration-confirm-email' uidb64 token %}">
+		Подтвердить почту</a>
+{% endautoescape %}

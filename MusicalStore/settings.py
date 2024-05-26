@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-k0*2g+p7gb#*36#9ap9lnzem&$#6voy%nayu1e4(s75-%wmcjh')
-DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ["*"]
 INTERNAL_IPS = ["127.0.0.1"]
@@ -191,10 +191,28 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file_info': {
+        'info': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': LOG_DIR / 'django_info.log',
+            'formatter': 'verbose',
+        },
+        'errors': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR / 'django_error.log',
+            'formatter': 'verbose',
+        },
+        'debug': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR / 'django_debug.log',
+            'formatter': 'verbose',
+        },
+        'celery_debug': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR / 'celery_debug.log',
             'formatter': 'verbose',
         },
         'console': {
@@ -204,9 +222,14 @@ LOGGING = {
         },
     },
     'loggers': {
-        BASE_DIR.name: {
-            'handlers': ['file_info', 'console'],
+        'django': {
+            'handlers': ['info', 'console'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'celery': {
+            'handlers': ['celery_debug', 'console'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     },
@@ -214,12 +237,21 @@ LOGGING = {
 # Логирование ------------------------------------------------------------------------------------------------
 
 
-# Создаем директорию для логов, если она не существует
+# email ----------email-------------email-----------email--------------------------------------------------------------
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+# email ----------email-------------email-----------email--------------------------------------------------------------
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+PASSWORD_RESET_TIMEOUT = 1200
+SITE_NAME = 'Musical Shop'
 
 # Celery --------Celery----------Celery-------------Celery------------Celery------------------Celery-----------Celery--
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
